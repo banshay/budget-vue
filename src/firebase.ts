@@ -1,10 +1,14 @@
-import { ref } from 'vue'
-import { getAuth, signInWithRedirect } from '@firebase/auth'
-import firebase from 'firebase/compat'
-import initializeApp = firebase.initializeApp
-import GoogleAuthProvider = firebase.auth.GoogleAuthProvider
-import Persistence = firebase.auth.Auth.Persistence
-import User = firebase.User
+import {
+  browserLocalPersistence,
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  setPersistence,
+  signInWithRedirect,
+  User
+} from 'firebase/auth'
+import {initializeApp} from 'firebase/app';
+import {ref} from 'vue';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDkVHGVoeNzkXpdIzoCdQP7cFfW3w_mZIg',
@@ -19,40 +23,22 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 
 const provider = new GoogleAuthProvider()
-const auth = getAuth()
-const currentUser = ref<User | null>(null)
+const budgetAuth = getAuth(app)
 
 export const signIn = async () => {
-  await firebase.auth().setPersistence(Persistence.LOCAL)
+  await setPersistence(budgetAuth, browserLocalPersistence)
   await sessionStorage.setItem('isLoggingIn', 'true')
-  return signInWithRedirect(auth, provider)
+  return signInWithRedirect(budgetAuth, provider)
 }
-
+const currentUser = ref<User | null>()
 export const isLoggedIn = async () => {
   return new Promise((resolve, reject) => {
-    const unsubscribe = firebase
-      .auth()
-      .onAuthStateChanged((user: User | null) => {
-        unsubscribe()
-        resolve(user)
-      }, reject)
+    onAuthStateChanged(budgetAuth, user => {
+      currentUser.value = user
+      resolve(user)
+    }, reject)
   })
 }
-// export const isLoggedIn = async () => {
-//   // firebase
-//   //   .auth()
-//   //   .currentUser?.getIdToken(false)
-//   //   .then((token: string) => (currentUser.value = token))
-//   const isLoggingIn: boolean = sessionStorage.getItem('isLoggingIn') == 'true'
-//   if (isLoggingIn) {
-//     sessionStorage.setItem('isLoggingIn', 'false')
-//     const userCredential = await getRedirectResult(auth)
-//     if (userCredential) {
-//       currentUser.value = firebase.auth().currentUser
-//     }
-//   } else {
-//     currentUser.value = firebase.auth().currentUser
-//   }
-//
-//   return !!currentUser.value
-// }
+
+export const userId = () => currentUser.value?.uid
+export const token = async () => await currentUser.value?.getIdToken()
