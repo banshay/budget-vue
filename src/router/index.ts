@@ -2,6 +2,8 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import SignIn from '../views/SignIn.vue'
 import { isLoggedIn } from '@/firebase'
+import Add from '@/views/Add.vue'
+import Options from '@/views/Options.vue'
 
 const routes = [
   {
@@ -13,6 +15,16 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: SignIn,
+  },
+  {
+    path: '/add',
+    name: 'Add',
+    component: Add,
+  },
+  {
+    path: '/options',
+    name: 'Options',
+    component: Options,
   },
 ]
 

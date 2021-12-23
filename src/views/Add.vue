@@ -1,0 +1,115 @@
+<template>
+  <div class="mx-auto pt-6 pb-6 w-3/6 h-screen bg-amber-600">
+    <div class="mx-auto w-4/5 flex flex-col justify-around h-2/5">
+      <div class="flex flex-col">
+        <div>
+          <label for="expense">Expense</label>
+          <input
+            id="expense"
+            v-model="expense"
+            type="radio"
+            name="expense"
+            value="-1"
+          />
+        </div>
+        <div>
+          <label for="income">Income</label>
+          <input
+            id="income"
+            v-model="expense"
+            type="radio"
+            name="expense"
+            value="1"
+          />
+        </div>
+      </div>
+      <div>
+        <select name="type" id="money-type" v-model="type">
+          <option v-for="(moneyType, i) in types" :value="moneyType" :key="i">
+            {{ MonetaryType[moneyType] }}
+          </option>
+        </select>
+      </div>
+      <div class="px-4">
+        <input
+          class="w-full"
+          v-model="category"
+          type="text"
+          placeholder="Category"
+        />
+      </div>
+      <div class="px-4 flex justify-between">
+        <input
+          class="flex-grow mr-5"
+          v-model="date"
+          type="date"
+          placeholder="Date"
+        />
+        <input
+          class="flex-grow"
+          v-model="amount"
+          type="text"
+          placeholder="Amount"
+        />
+      </div>
+      <div class="flex justify-around">
+        <button
+          class="bg-red-600 hover:bg-red-500 text-gray-200 px-2 py-2 rounded"
+          @click="discard"
+        >
+          Discard
+        </button>
+        <button
+          class="bg-lime-700 hover:bg-lime-600 text-gray-200 px-2 py-2 rounded"
+          @click="add"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, reactive, toRefs } from 'vue'
+import { useRouter } from 'vue-router'
+import useMoney, { MonetaryRecord, MonetaryType } from '@/composition/money'
+
+export default defineComponent({
+  name: 'Add',
+  setup() {
+    const initial = {
+      expense: -1,
+      category: '',
+      amount: null,
+      type: Object.keys(MonetaryType)[0],
+      date: Date.now(),
+    }
+    const router = useRouter()
+    const { saveMoney } = useMoney()
+
+    const state = reactive(initial)
+
+    const add = async () => {
+      const input: MonetaryRecord = {
+        amount: (state?.amount || 0) * state.expense,
+        date: state.date.toLocaleString(),
+        category: state.category,
+        monetaryType: state.type,
+      }
+      await saveMoney(input)
+      await router.push('/')
+    }
+
+    const discard = () => {
+      router.push('/')
+    }
+
+    const types = Object.keys(MonetaryType)
+
+    console.log(state.type)
+
+    return { ...toRefs(state), add, types, MonetaryType, discard }
+  },
+})
+</script>
