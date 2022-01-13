@@ -1,30 +1,32 @@
 <template>
   <div class="mx-auto pt-6 pb-6 w-3/6 h-screen bg-amber-600">
     <div class="mx-auto w-4/5 flex flex-col justify-around h-2/5">
-      <div class="flex flex-col">
+      <div class="flex flex-col px-4">
         <div>
-          <label for="expense">Expense</label>
           <input
+            class="mr-2"
             id="expense"
             v-model="expense"
             type="radio"
             name="expense"
             value="-1"
           />
+          <label for="expense">Expense</label>
         </div>
         <div>
-          <label for="income">Income</label>
           <input
+            class="mr-2"
             id="income"
             v-model="expense"
             type="radio"
             name="expense"
             value="1"
           />
+          <label for="income">Income</label>
         </div>
       </div>
-      <div>
-        <select name="type" id="money-type" v-model="type">
+      <div class="px-4">
+        <select class="w-full" name="type" id="money-type" v-model="type">
           <option v-for="(moneyType, i) in types" :value="moneyType" :key="i">
             {{ MonetaryType[moneyType] }}
           </option>
