@@ -5,18 +5,18 @@ import {
   onAuthStateChanged,
   setPersistence,
   signInWithRedirect,
-  User
-} from 'firebase/auth'
-import {initializeApp} from 'firebase/app';
-import {ref} from 'vue';
+  type User as FirebaseUser,
+} from "firebase/auth"
+import { initializeApp } from "firebase/app"
+import { ref } from "vue"
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDkVHGVoeNzkXpdIzoCdQP7cFfW3w_mZIg',
-  authDomain: 'budget-projekt.firebaseapp.com',
-  projectId: 'budget-projekt',
-  storageBucket: 'budget-projekt.appspot.com',
-  messagingSenderId: '629459546968',
-  appId: '1:629459546968:web:c27408a4e7977e543feb2d',
+  apiKey: "AIzaSyAqyDLbUgJfdcdi4exSVWE0cZy34RcJyjA",
+  authDomain: "wowtracker-346917.firebaseapp.com",
+  projectId: "wowtracker-346917",
+  storageBucket: "wowtracker-346917.appspot.com",
+  messagingSenderId: "82634285895",
+  appId: "1:82634285895:web:c2155aec282516249f6262",
 }
 
 // Initialize Firebase
@@ -27,16 +27,20 @@ const budgetAuth = getAuth(app)
 
 export const signIn = async () => {
   await setPersistence(budgetAuth, browserLocalPersistence)
-  await sessionStorage.setItem('isLoggingIn', 'true')
+  await sessionStorage.setItem("isLoggingIn", "true")
   return signInWithRedirect(budgetAuth, provider)
 }
-const currentUser = ref<User | null>()
+const currentUser = ref<FirebaseUser | null>()
 export const isLoggedIn = async () => {
   return new Promise((resolve, reject) => {
-    onAuthStateChanged(budgetAuth, user => {
-      currentUser.value = user
-      resolve(user)
-    }, reject)
+    onAuthStateChanged(
+      budgetAuth,
+      (user) => {
+        currentUser.value = user
+        resolve(user)
+      },
+      reject
+    )
   })
 }
 

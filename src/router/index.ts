@@ -1,29 +1,29 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-import SignIn from '../views/SignIn.vue'
-import { isLoggedIn } from '@/firebase'
-import Add from '@/views/Add.vue'
-import Options from '@/views/Options.vue'
+import { createRouter, createWebHashHistory } from "vue-router"
+import Home from "../views/HomeView.vue"
+import SignIn from "../views/SignInView.vue"
+import { isLoggedIn } from "@/firebase"
+import Add from "@/views/AddView.vue"
+import Options from "@/views/OptionsView.vue"
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
+    path: "/",
+    name: "Home",
     component: Home,
   },
   {
-    path: '/login',
-    name: 'Login',
+    path: "/login",
+    name: "Login",
     component: SignIn,
   },
   {
-    path: '/add',
-    name: 'Add',
+    path: "/add",
+    name: "Add",
     component: Add,
   },
   {
-    path: '/options',
-    name: 'Options',
+    path: "/options",
+    name: "Options",
     component: Options,
   },
 ]
@@ -34,12 +34,12 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.path === '/login') {
+  if (to.path === "/login") {
     next()
   } else {
     isLoggedIn().then((loggedIn) => {
       if (!loggedIn) {
-        next('/login')
+        next("/login")
       } else {
         next()
       }

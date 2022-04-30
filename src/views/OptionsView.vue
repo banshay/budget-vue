@@ -44,37 +44,23 @@
   </Suspense>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs, watch } from 'vue'
-import useOption, { Options } from '@/composition/option'
+<script setup lang="ts">
+import { onMounted } from "vue"
+import { useOptionStore } from "@/stores/options/options"
 
-export default defineComponent({
-  name: 'Options',
-  setup() {
-    const { options, loadOptions, updateOption } = useOption()
+const optionStore = useOptionStore()
 
-    const initial: Options = {
-      id: '',
-      visualisationPeriod: options.visualisationPeriod || '',
-      rolloverPolicy: options.rolloverPolicy || '',
-    }
-    const state = reactive(initial)
-
-    onMounted(async () => {
-      if (!options.loaded) {
-        const opt = await loadOptions()
-        state.visualisationPeriod = opt.visualisationPeriod
-        state.rolloverPolicy = opt.rolloverPolicy
-      }
-    })
-
-    watch(state, (value) =>
-      updateOption({
-        ...value,
-      })
-    )
-
-    return { ...toRefs(state) }
-  },
+onMounted(async () => {
+  if (!optionStore.loaded) {
+    await optionStore.loadOptions()
+  }
 })
+
+/*
+watch(state, (value) =>
+  updateOption({
+    ...value,
+  })
+)
+ */
 </script>

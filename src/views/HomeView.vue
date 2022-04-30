@@ -22,7 +22,7 @@
           {{ visualisationPeriodDisplay[visualisationPeriod] }}
         </p>
         <p class="text-gray-200 text-7xl">
-          {{ balance > 0 ? '+' : '' }}{{ balance }}
+          {{ balance > 0 ? "+" : "" }}{{ balance }}
           <span class="text-5xl">CHF</span>
         </p>
       </div>
@@ -36,7 +36,7 @@
             <div class="mx-12 text-left">{{ item.category }}</div>
             <div class="flex-grow text-right">
               <div class="flex flex-nowrap items-baseline justify-end">
-                {{ item.amount > 0 ? '+' : '' }}{{ item.amount }}
+                {{ item.amount > 0 ? "+" : "" }}{{ item.amount }}
                 <span class="ml-1 text-sm">CHF</span>
               </div>
             </div>
@@ -63,38 +63,23 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
-import useMoney, { MonetaryRecord } from '@/composition/money'
-import useOption, {
-  Options,
-  visualisationPeriodDisplay,
-} from '@/composition/option'
+<script setup lang="ts">
+import { onMounted, ref } from "vue"
+import type { MonetaryRecord } from "@/types/moneyTypes"
+import { useMoneyStore } from "@/stores/money/money"
+import { useOptionStore } from "@/stores/options/options"
+import { visualisationPeriodDisplay } from "@/types/optionTypes"
 
-export default defineComponent({
-  name: 'Home',
-  setup() {
-    const { loadBalance, loadActivity } = useMoney()
-    const { loadOptions } = useOption()
+const moneyStore = useMoneyStore()
+const optionStore = useOptionStore()
 
-    const balance = ref<string>('')
-    const history = ref<MonetaryRecord[]>([])
-    const options = reactive<Options>({
-      id: '',
-      visualisationPeriod: '',
-      rolloverPolicy: '',
-    })
+const balance = ref<string>("")
+const history = ref<MonetaryRecord[]>([])
 
-    onMounted(async () => {
-      const opt = await loadOptions()
-      options.visualisationPeriod = opt.visualisationPeriod
-      options.rolloverPolicy = opt.rolloverPolicy
+onMounted(async () => {
+  await optionStore.loadOptions()
 
-      balance.value = await loadBalance()
-      history.value = await loadActivity()
-    })
-
-    return { balance, history, ...toRefs(options), visualisationPeriodDisplay }
-  },
+  balance.value = await moneyStore.loadBalance()
+  history.value = await moneyStore.loadActivity()
 })
 </script>

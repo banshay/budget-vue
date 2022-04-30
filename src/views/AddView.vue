@@ -72,46 +72,38 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
-import { useRouter } from 'vue-router'
-import useMoney, { MonetaryRecord, MonetaryType } from '@/composition/money'
+<script setup lang="ts">
+import { reactive } from "vue"
+import { useRouter } from "vue-router"
+import { type MonetaryRecord, MonetaryType } from "@/types/moneyTypes"
+import { useMoneyStore } from "@/stores/money/money"
 
-export default defineComponent({
-  name: 'Add',
-  setup() {
-    const initial = {
-      expense: -1,
-      category: '',
-      amount: null,
-      type: Object.keys(MonetaryType)[0],
-      date: Date.now(),
-    }
-    const router = useRouter()
-    const { saveMoney } = useMoney()
+const initial = {
+  expense: -1,
+  category: "",
+  amount: null,
+  type: Object.keys(MonetaryType)[0],
+  date: Date.now(),
+}
+const router = useRouter()
+const moneyStore = useMoneyStore()
 
-    const state = reactive(initial)
+const state = reactive(initial)
 
-    const add = async () => {
-      const input: MonetaryRecord = {
-        amount: (state?.amount || 0) * state.expense,
-        date: state.date.toLocaleString(),
-        category: state.category,
-        monetaryType: state.type,
-      }
-      await saveMoney(input)
-      await router.push('/')
-    }
+const add = async () => {
+  const input: MonetaryRecord = {
+    amount: (state?.amount || 0) * state.expense,
+    date: state.date.toLocaleString(),
+    category: state.category,
+    monetaryType: state.type,
+  }
+  await moneyStore.saveMoney(input)
+  await router.push("/")
+}
 
-    const discard = () => {
-      router.push('/')
-    }
+const discard = () => {
+  router.push("/")
+}
 
-    const types = Object.keys(MonetaryType)
-
-    console.log(state.type)
-
-    return { ...toRefs(state), add, types, MonetaryType, discard }
-  },
-})
+const types = Object.keys(MonetaryType)
 </script>
