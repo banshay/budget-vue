@@ -1,0 +1,25 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '15'
+      - run: npm install && npm run build
+      - run: |
+          cd dist
+          git init
+          git checkout -b gh-pages
+          git add -A
+          git commit -m 'deploy'
+          git push -f git@github.com:banshay/banshay.github.io.git gh-pages
