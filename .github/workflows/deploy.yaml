@@ -19,6 +19,8 @@ jobs:
       - run: |
           cd dist
           git init
+          git config --global user.name banshay
+          git config --global user.email banshay@users.noreply.github.com
           git checkout -b gh-pages
           git add -A
           git commit -m 'deploy'
