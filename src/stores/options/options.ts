@@ -1,8 +1,8 @@
 import { defineStore } from "pinia"
-import useGraphQL from "@/composition/graphql"
 import { userId } from "@/firebase"
 import { gql } from "graphql-request"
 import type { Options } from "@/types/optionTypes"
+import { useGraphQL } from "@/stores/graphql"
 
 export const useOptionStore = defineStore("option", {
   state: () => ({
@@ -13,7 +13,7 @@ export const useOptionStore = defineStore("option", {
   }),
   actions: {
     async updateOption(options: Options) {
-      const { client } = useGraphQL()
+      const graphql = useGraphQL()
 
       const uid = await userId()
       const optionInput = {
@@ -30,13 +30,12 @@ export const useOptionStore = defineStore("option", {
           }
         }
       `
-      const graphQLClient = await client()
-      const data = await graphQLClient.request(query, optionInput)
+      const data = await graphql.client?.request(query, optionInput)
       this.updateOptions(data.updateOption)
     },
 
     async loadOptions() {
-      const { client } = useGraphQL()
+      const graphql = useGraphQL()
 
       const query = gql`
           {
@@ -46,8 +45,8 @@ export const useOptionStore = defineStore("option", {
               }
           }`
 
-      const graphQLClient = await client()
-      const data = await graphQLClient.request(query)
+      const data = await graphql.client?.request(query)
+      console.log("data", data)
       this.updateOptions(data.option)
       this.loaded = true
     },

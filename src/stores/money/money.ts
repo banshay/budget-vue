@@ -1,14 +1,14 @@
 import { defineStore } from "pinia"
-import useGraphQL from "@/composition/graphql"
 import { gql } from "graphql-request"
 import { userId } from "@/firebase"
-import type { MonetaryRecord } from "@/composition/money"
+import { useGraphQL } from "@/stores/graphql"
+import type { MonetaryRecord } from "@/types/moneyTypes"
 
 export const useMoneyStore = defineStore("money", {
   state: () => ({}),
   actions: {
     async loadBalance() {
-      const { client } = useGraphQL()
+      const graphql = useGraphQL()
       const query = gql`
           {
               budget(userId: "${await userId()}"){
@@ -16,13 +16,12 @@ export const useMoneyStore = defineStore("money", {
               }
           }
       `
-      const gqlClient = await client()
-      const data = await gqlClient.request(query)
+      const data = await graphql.client?.request(query)
       return data.budget.balance
     },
 
     async loadActivity() {
-      const { client } = useGraphQL()
+      const graphql = useGraphQL()
       const query = gql`
           {
               monetaryHistory(userId: "${await userId()}", limit: 6){
@@ -32,13 +31,12 @@ export const useMoneyStore = defineStore("money", {
               }
           }
       `
-      const graphQLClient = await client()
-      const data = await graphQLClient.request(query)
+      const data = await graphql.client?.request(query)
       return data.monetaryHistory
     },
 
     async saveMoney(moneyRecord: MonetaryRecord) {
-      const { client } = useGraphQL()
+      const graphql = useGraphQL()
       const query = gql`
           mutation($input: MonetaryRecordInput) {
               saveMonetaryRecord(userId: "${await userId()}", monetaryRecordInput: $input){
@@ -52,8 +50,7 @@ export const useMoneyStore = defineStore("money", {
         },
       }
 
-      const graphQLClient = await client()
-      return graphQLClient.request(query, input)
+      return graphql.client?.request(query, input)
     },
   },
 })
