@@ -25,6 +25,7 @@ jobs:
           git init
           git config --global user.name banshay
           git config --global user.email banshay@users.noreply.github.com
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git checkout -b gh-pages
           git add -A
           git commit -m 'deploy'
