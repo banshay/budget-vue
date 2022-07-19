@@ -6,7 +6,7 @@
           <input
             class="mr-2"
             id="expense"
-            v-model="expense"
+            v-model="state.expense"
             type="radio"
             name="expense"
             value="-1"
@@ -17,7 +17,7 @@
           <input
             class="mr-2"
             id="income"
-            v-model="expense"
+            v-model="state.expense"
             type="radio"
             name="expense"
             value="1"
@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="px-4">
-        <select class="w-full" name="type" id="money-type" v-model="type">
+        <select class="w-full" name="type" id="money-type" v-model="state.type">
           <option v-for="(moneyType, i) in types" :value="moneyType" :key="i">
             {{ MonetaryType[moneyType] }}
           </option>
@@ -35,7 +35,7 @@
       <div class="px-4">
         <input
           class="w-full"
-          v-model="category"
+          v-model="state.category"
           type="text"
           placeholder="Category"
         />
@@ -43,13 +43,13 @@
       <div class="px-4 flex justify-between">
         <input
           class="flex-grow mr-5"
-          v-model="date"
+          v-model="state.date"
           type="date"
           placeholder="Date"
         />
         <input
           class="flex-grow"
-          v-model="amount"
+          v-model="state.amount"
           type="text"
           placeholder="Amount"
         />
@@ -83,7 +83,7 @@ const initial = {
   category: "",
   amount: null,
   type: Object.keys(MonetaryType)[0],
-  date: Date.now(),
+  date: new Date(),
 }
 const router = useRouter()
 const moneyStore = useMoneyStore()
@@ -91,9 +91,10 @@ const moneyStore = useMoneyStore()
 const state = reactive(initial)
 
 const add = async () => {
+  console.log(state)
   const input: MonetaryRecord = {
     amount: (state?.amount || 0) * state.expense,
-    date: state.date.toLocaleString(),
+    date: new Date(state.date).toISOString().split(/T/)[0],
     category: state.category,
     monetaryType: state.type,
   }

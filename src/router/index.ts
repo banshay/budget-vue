@@ -1,9 +1,9 @@
 import { createRouter, createWebHashHistory } from "vue-router"
 import Home from "../views/HomeView.vue"
-import SignIn from "../views/SignInView.vue"
-import { isLoggedIn } from "@/firebase"
 import Add from "@/views/AddView.vue"
 import Options from "@/views/OptionsView.vue"
+import SignIn from "@/views/SignInView.vue"
+import { useTokenStore } from "@/stores/token"
 
 const routes = [
   {
@@ -34,16 +34,13 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const tokenStore = useTokenStore()
   if (to.path === "/login") {
     next()
+  } else if (tokenStore.getToken()) {
+    next()
   } else {
-    isLoggedIn().then((loggedIn) => {
-      if (!loggedIn) {
-        next("/login")
-      } else {
-        next()
-      }
-    })
+    next("/login")
   }
 })
 export default router

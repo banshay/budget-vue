@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import { GraphQLClient } from "graphql-request"
-import { token } from "@/firebase"
+import { useTokenStore } from "@/stores/token"
 
 const host: string = import.meta.env.VITE_GRAPHQL_ENDPOINT
 
@@ -10,9 +10,11 @@ export const useGraphQL = defineStore("graphql", {
   }),
   actions: {
     async createGraphQlClient() {
+      const tokenStore = useTokenStore()
+
       this.client = new GraphQLClient(host, {
         headers: {
-          Authorization: `Bearer ${await token()}`,
+          Authorization: `${tokenStore.getToken()}`,
           Accept: "application/json",
         },
       })

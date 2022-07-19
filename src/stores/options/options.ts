@@ -1,8 +1,8 @@
 import { defineStore } from "pinia"
-import { userId } from "@/firebase"
 import { gql } from "graphql-request"
 import type { Options } from "@/types/optionTypes"
 import { useGraphQL } from "@/stores/graphql"
+import { useTokenStore } from "@/stores/token"
 
 export const useOptionStore = defineStore("option", {
   state: () => ({
@@ -15,11 +15,9 @@ export const useOptionStore = defineStore("option", {
     async updateOption(options: Options) {
       const graphql = useGraphQL()
 
-      const uid = await userId()
       const optionInput = {
         input: {
           ...options,
-          id: uid,
         },
       }
       const query = gql`
@@ -36,17 +34,18 @@ export const useOptionStore = defineStore("option", {
 
     async loadOptions() {
       const graphql = useGraphQL()
+      const tokenStore = useTokenStore()
 
       const query = gql`
-          {
-              option(userId: "${await userId()}"){
-                  visualisationPeriod
-                  rolloverPolicy
-              }
-          }`
+        {
+          option {
+            visualisationPeriod
+            rolloverPolicy
+          }
+        }
+      `
 
       const data = await graphql.client?.request(query)
-      console.log("data", data)
       this.updateOptions(data.option)
       this.loaded = true
     },

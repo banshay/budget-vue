@@ -12,10 +12,12 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@types/google-one-tap": "^1.2.0",
     "core-js": "^3.6.5",
     "firebase": "^9.6.1",
     "graphql": "^16.4.0",
     "graphql-request": "^4.2.0",
+    "jose": "^4.8.3",
     "pinia": "^2.0.13",
     "vue": "^3.2.33",
     "vue-router": "^4.0.14"
