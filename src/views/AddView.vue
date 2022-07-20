@@ -1,7 +1,7 @@
 <template>
-  <div class="mx-auto pt-6 pb-6 w-3/6 h-screen bg-amber-600">
+  <div class="mx-auto pt-6 pb-6 w-3/6 h-screen bg-stone-700">
     <div class="mx-auto w-4/5 flex flex-col justify-around h-2/5">
-      <div class="flex flex-col px-4">
+      <div class="flex flex-col px-4 text-gray-200">
         <div>
           <input
             class="mr-2"
@@ -91,7 +91,6 @@ const moneyStore = useMoneyStore()
 const state = reactive(initial)
 
 const add = async () => {
-  console.log(state)
   const input: MonetaryRecord = {
     amount: (state?.amount || 0) * state.expense,
     date: new Date(state.date).toISOString().split(/T/)[0],

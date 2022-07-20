@@ -1,10 +1,16 @@
 import { defineStore } from "pinia"
 import { gql } from "graphql-request"
 import { useGraphQL } from "@/stores/graphql"
-import type { MonetaryRecord } from "@/types/moneyTypes"
+import type { Budgetplan, MonetaryRecord } from "@/types/moneyTypes"
+
+interface State {
+  budgetplan: Budgetplan | null
+}
 
 export const useMoneyStore = defineStore("money", {
-  state: () => ({}),
+  state: (): State => ({
+    budgetplan: null,
+  }),
   actions: {
     async loadBalance() {
       const graphql = useGraphQL()
@@ -50,6 +56,64 @@ export const useMoneyStore = defineStore("money", {
       }
 
       return graphql.client?.request(query, input)
+    },
+
+    async loadBudgetplan() {
+      const graphql = useGraphQL()
+      const query = gql`
+        {
+          budgetplan {
+            planningPeriod
+            categories {
+              category
+              currentSpending
+              total
+            }
+          }
+        }
+      `
+      const data = await graphql.client?.request(query)
+      this.budgetplan = data.budgetplan
+    },
+
+    async saveBudgetplan(budgetplan: Budgetplan) {
+      const graphql = useGraphQL()
+      const query = gql`
+        mutation ($input: BudgetplanInput) {
+          saveBudgetplan(budgetplan: $input) {
+            planningPeriod
+            categories {
+              category
+              currentSpending
+              total
+            }
+          }
+        }
+      `
+
+      const input = {
+        input: {
+          ...budgetplan,
+          categories: [...budgetplan.categories.filter((x) => x.category)],
+        },
+      }
+
+      const data = await graphql.client?.request(query, input)
+      this.budgetplan = data.saveBudgetplan
+    },
+
+    async deleteBudgetplan() {
+      const graphql = useGraphQL()
+      const query = gql`
+        mutation {
+          deleteBudgetplan
+        }
+      `
+
+      const success = await graphql.client?.request(query)
+      if (success) {
+        this.budgetplan = null
+      }
     },
   },
 })
