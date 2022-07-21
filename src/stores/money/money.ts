@@ -66,8 +66,11 @@ export const useMoneyStore = defineStore("money", {
             planningPeriod
             categories {
               category
-              currentSpending
               total
+            }
+            currentSpending {
+              category
+              spending
             }
           }
         }
@@ -84,8 +87,11 @@ export const useMoneyStore = defineStore("money", {
             planningPeriod
             categories {
               category
-              currentSpending
               total
+            }
+            currentSpending {
+              category
+              spending
             }
           }
         }
