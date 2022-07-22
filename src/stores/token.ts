@@ -15,7 +15,7 @@ export const useTokenStore = defineStore("token", {
     } as State),
   actions: {
     loadToken() {
-      this.token = localStorage.getItem("token")
+      this.token = sessionStorage.getItem("token")
     },
     getToken() {
       if (!this.token) {

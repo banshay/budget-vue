@@ -17,6 +17,7 @@ export enum MonetaryType {
 export interface Budgetplan {
   planningPeriod: PlanningPeriod | null
   categories: CategoryTotal[]
+  currentSpending?: CategorySpending[]
 }
 
 export enum PlanningPeriod {
@@ -26,6 +27,10 @@ export enum PlanningPeriod {
 
 export interface CategoryTotal {
   category: string
-  currentSpending?: number
   total: number
+}
+
+export interface CategorySpending {
+  category: string
+  spending: number
 }

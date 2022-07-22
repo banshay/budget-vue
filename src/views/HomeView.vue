@@ -1,17 +1,7 @@
 <template>
-  <div class="h-screen flex flex-col">
-    <router-link to="/options">
-      <div class="flex flex-col items-end">
-        <cog-component class="m-4 w-16 h-16 fill-current text-gray-200" />
-      </div>
-    </router-link>
-    <router-link to="/budgetplan">
-      <div class="flex flex-col items-end">
-        <plan-component class="m-4 w-16 h-16 fill-current text-gray-200" />
-      </div>
-    </router-link>
-    <div class="mx-auto mt-10 flex-grow">
-      <div class="flex flex-col">
+  <div class="h-screen flex">
+    <div class="flex-grow flex flex-col">
+      <div class="flex-grow flex flex-col justify-center items-center">
         <p class="text-gray-200 self-center italic">
           {{ visualisationPeriodDisplay[visualisationPeriod] }}
         </p>
@@ -20,24 +10,38 @@
           <span class="text-5xl">CHF</span>
         </p>
       </div>
-    </div>
-    <div class="flex justify-between items-end">
-      <div class="w-2/5">
-        <div class="m-10 text-gray-200 w-full">
-          <p class="text-4xl text-left">Activity</p>
-          <div class="flex" v-for="(item, i) in history" :key="i">
-            <div class="ml-2 text-left">{{ item.date }}</div>
-            <div class="mx-12 text-left">{{ item.category }}</div>
-            <div class="flex-grow text-right">
-              <div class="flex flex-nowrap items-baseline justify-end">
-                {{ item.amount > 0 ? "+" : "" }}{{ item.amount }}
-                <span class="ml-1 text-sm">CHF</span>
+      <div class="mt-auto flex justify-between items-end">
+        <div class="w-2/5">
+          <div class="m-10 text-gray-200 w-full">
+            <p class="text-4xl text-left">Activity</p>
+            <div class="flex" v-for="(item, i) in history" :key="i">
+              <div class="ml-2 text-left">{{ item.date }}</div>
+              <div class="mx-12 text-left">{{ item.category }}</div>
+              <div class="flex-grow text-right">
+                <div class="flex flex-nowrap items-baseline justify-end">
+                  {{ item.amount > 0 ? "+" : "" }}{{ item.amount }}
+                  <span class="ml-1 text-sm">CHF</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="m-10 w-16 h-16 bg-lime-500 hover:bg-lime-400 rounded-full">
+    </div>
+    <div class="flex flex-col">
+      <router-link to="/options">
+        <div class="items-end">
+          <cog-component class="m-4 w-16 h-16 fill-current text-gray-200" />
+        </div>
+      </router-link>
+      <router-link to="/budgetplan">
+        <div class="items-end">
+          <plan-component class="m-4 w-16 h-16 fill-current text-gray-200" />
+        </div>
+      </router-link>
+      <div
+        class="items-end mt-auto m-4 w-16 h-16 bg-lime-500 hover:bg-lime-400 rounded-full"
+      >
         <router-link to="/add">
           <svg
             xmlns="http://www.w3.org/2000/svg"
