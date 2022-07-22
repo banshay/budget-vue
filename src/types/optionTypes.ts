@@ -5,7 +5,6 @@ export const visualisationPeriodDisplay = {
 }
 
 export interface Options {
-  id: string
   visualisationPeriod: string
   rolloverPolicy: string
 }

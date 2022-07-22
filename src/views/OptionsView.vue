@@ -60,9 +60,10 @@ onMounted(async () => {
   }
 })
 
-watch(optionStore, (value) =>
+watch(optionStore, () =>
   optionStore.updateOption({
-    ...value,
+    visualisationPeriod: optionStore.visualisationPeriod,
+    rolloverPolicy: optionStore.rolloverPolicy,
   })
 )
 </script>

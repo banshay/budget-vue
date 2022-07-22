@@ -2,11 +2,9 @@ import { defineStore } from "pinia"
 import { gql } from "graphql-request"
 import type { Options } from "@/types/optionTypes"
 import { useGraphQL } from "@/stores/graphql"
-import { useTokenStore } from "@/stores/token"
 
 export const useOptionStore = defineStore("option", {
   state: () => ({
-    id: "",
     visualisationPeriod: "",
     rolloverPolicy: "",
     loaded: false,
@@ -34,7 +32,6 @@ export const useOptionStore = defineStore("option", {
 
     async loadOptions() {
       const graphql = useGraphQL()
-      const tokenStore = useTokenStore()
 
       const query = gql`
         {
