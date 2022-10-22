@@ -22,6 +22,7 @@ jobs:
       - run: npm install && npm run build
       - run: |
           cd dist
+          echo budsjett.net > CNAME
           git init
           git config --global user.name banshay
           git config --global user.email banshay@users.noreply.github.com
