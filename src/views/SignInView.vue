@@ -4,7 +4,7 @@
       id="g_id_onload"
       data-client_id="405975567512-ml31fikaagpbtni851nplbhpfg2tkqop.apps.googleusercontent.com"
       data-callback="loginCallback"
-      data-auto_prompt="false"
+      data-auto_select="true"
     ></div>
     <div
       class="g_id_signin"

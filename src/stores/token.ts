@@ -29,5 +29,10 @@ export const useTokenStore = defineStore("token", {
       }
       return this.uid
     },
+    invalidateToken() {
+      this.token = null
+      sessionStorage.removeItem("token")
+      location.reload()
+    },
   },
 })
