@@ -19,6 +19,7 @@ export const useGraphQL = defineStore("graphql", {
           Accept: "application/json",
         },
         responseMiddleware: (response: Response<unknown> | Error) => {
+          console.log(response)
           if (
             (hasStatus(response) && response.status === 401) ||
             response instanceof Error
