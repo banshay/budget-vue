@@ -1,38 +1,33 @@
-import { defineStore } from "pinia"
+import {defineStore} from "pinia"
 
-const host: string = import.meta.env.VITE_GRAPHQL_ENDPOINT
+const host: string = import.meta.env.VITE_ENDPOINT
 
 interface State {
-  token: string | null
   uid: string | null
 }
 
 export const useTokenStore = defineStore("token", {
   state: () =>
-    ({
-      token: null,
-      uid: null,
-    } as State),
+      ({
+        uid: null,
+      } as State),
   actions: {
-    loadToken() {
-      this.token = sessionStorage.getItem("token")
-    },
-    getToken() {
-      if (!this.token) {
-        this.loadToken()
-      }
-      return this.token
+    loadUid() {
+      this.uid = sessionStorage.getItem("uid")
     },
     getUid() {
       if (!this.uid) {
-        this.loadToken()
+        this.loadUid()
       }
       return this.uid
     },
-    invalidateToken() {
-      this.token = null
-      sessionStorage.removeItem("token")
-      location.reload()
-    },
+    async createLoginSession(idToken: string) {
+      const response = await fetch(`${host}/authorize`, {
+        method: "POST"
+        , body: idToken
+      })
+      const uid = await response.json()
+      sessionStorage.setItem("uid", uid)
+    }
   },
 })
