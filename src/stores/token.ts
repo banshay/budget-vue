@@ -1,38 +1,48 @@
 import { defineStore } from "pinia"
 
-const host: string = import.meta.env.VITE_GRAPHQL_ENDPOINT
+const host: string = import.meta.env.VITE_ENDPOINT
 
 interface State {
-  token: string | null
   uid: string | null
+  clientId: string
 }
 
 export const useTokenStore = defineStore("token", {
   state: () =>
     ({
-      token: null,
       uid: null,
+      clientId:
+        "405975567512-ml31fikaagpbtni851nplbhpfg2tkqop.apps.googleusercontent.com",
     } as State),
   actions: {
-    loadToken() {
-      this.token = sessionStorage.getItem("token")
-    },
-    getToken() {
-      if (!this.token) {
-        this.loadToken()
-      }
-      return this.token
+    loadUid() {
+      this.uid = localStorage.getItem("uid")
     },
     getUid() {
       if (!this.uid) {
-        this.loadToken()
+        this.loadUid()
       }
       return this.uid
     },
-    invalidateToken() {
-      this.token = null
-      sessionStorage.removeItem("token")
-      location.reload()
+    async createLoginSession(idToken: string) {
+      const response = await fetch(`${host}/authorize`, {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+        },
+        body: idToken,
+      })
+      const responseJson: { uid: string; authorized: boolean } =
+        await response.json()
+      this.uid = responseJson.uid
+      localStorage.setItem("uid", this.uid)
+
+      if (!responseJson.authorized) {
+        location.href =
+          `https://accounts.google.com/o/oauth2/v2/auth?scope=email&access_type=offline&include_granted_scopes=true&` +
+          `response_type=code&state=${this.uid}&redirect_uri=${host}/code&client_id=${this.clientId}`
+      }
     },
   },
 })

@@ -15,17 +15,8 @@ export const useGraphQL = defineStore("graphql", {
 
       this.client = new GraphQLClient(host, {
         headers: {
-          Authorization: `${tokenStore.getToken()}`,
+          uid: `${tokenStore.getUid()}`,
           Accept: "application/json",
-        },
-        responseMiddleware: (response: Response<unknown> | Error) => {
-          console.log(response)
-          if (
-            (hasStatus(response) && response.status === 401) ||
-            response instanceof Error
-          ) {
-            tokenStore.invalidateToken()
-          }
         },
       })
     },

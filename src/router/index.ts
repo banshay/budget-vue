@@ -43,7 +43,7 @@ router.beforeEach((to, from, next) => {
   const tokenStore = useTokenStore()
   if (to.path === "/login") {
     next()
-  } else if (tokenStore.getToken()) {
+  } else if (tokenStore.getUid()) {
     next()
   } else {
     next("/login")
