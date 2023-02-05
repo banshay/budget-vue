@@ -35,18 +35,21 @@ async function handleCredentialResponse(response) {
 }
 
 onMounted(() => {
-  window.google.accounts.id.initialize({
-    client_id: tokenStore.clientId,
-    callback: handleCredentialResponse,
-    auto_select: true,
-  })
-  window.google.accounts.id.renderButton(googleLoginBtn.value, {
-    text: "Login",
-    size: "large",
-    theme: "outline", // option : filled_black | outline | filled_blue
-    type: "standard",
-    shape: "rectangular",
-    logo_alignment: "left",
+  const google = document.getElementById("google")
+  google.addEventListener("load", () => {
+    window.google.accounts.id.initialize({
+      client_id: tokenStore.clientId,
+      callback: handleCredentialResponse,
+      auto_select: true,
+    })
+    window.google.accounts.id.renderButton(googleLoginBtn.value, {
+      text: "Login",
+      size: "large",
+      theme: "outline", // option : filled_black | outline | filled_blue
+      type: "standard",
+      shape: "rectangular",
+      logo_alignment: "left",
+    })
   })
 })
 </script>
