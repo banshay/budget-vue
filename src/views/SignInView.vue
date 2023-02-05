@@ -24,33 +24,29 @@
 //
 // const domain = isProd ? "https://budsjett.net" : "http://localhost:3000"
 
-import {onMounted, ref} from "vue";
-import {useTokenStore} from "@/stores/token";
+import { onMounted, ref } from "vue"
+import { useTokenStore } from "@/stores/token"
 
 const googleLoginBtn = ref(null)
 const tokenStore = useTokenStore()
 
 async function handleCredentialResponse(response) {
-  tokenStore.createLoginSession(response.credentials)
+  tokenStore.createLoginSession(response.credential)
 }
 
 onMounted(() => {
-      const gClientId = "405975567512-ml31fikaagpbtni851nplbhpfg2tkqop.apps.googleusercontent.com"
-      window.google.accounts.id.initialize({
-        client_id: gClientId,
-        callback: handleCredentialResponse,
-        auto_select: true
-      })
-      window.google.accounts.id.renderButton(
-          googleLoginBtn.value, {
-            text: 'Login',
-            size: 'large',
-            theme: 'outline',// option : filled_black | outline | filled_blue
-            type: "standard",
-            shape: "rectangular",
-            logo_alignment: "left"
-          }
-      )
-    }
-)
+  window.google.accounts.id.initialize({
+    client_id: tokenStore.clientId,
+    callback: handleCredentialResponse,
+    auto_select: true,
+  })
+  window.google.accounts.id.renderButton(googleLoginBtn.value, {
+    text: "Login",
+    size: "large",
+    theme: "outline", // option : filled_black | outline | filled_blue
+    type: "standard",
+    shape: "rectangular",
+    logo_alignment: "left",
+  })
+})
 </script>
