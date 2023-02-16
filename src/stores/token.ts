@@ -42,6 +42,8 @@ export const useTokenStore = defineStore("token", {
         location.href =
           `https://accounts.google.com/o/oauth2/v2/auth?scope=email&prompt=consent&access_type=offline&include_granted_scopes=true&` +
           `response_type=code&state=${this.uid}&redirect_uri=${host}/code&client_id=${this.clientId}`
+      } else {
+        location.href = "/"
       }
     },
   },

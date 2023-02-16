@@ -93,7 +93,7 @@ const state = reactive(initial)
 const add = async () => {
   const input: MonetaryRecord = {
     amount: (state?.amount || 0) * state.expense,
-    date: new Date(state.date).toISOString().split(/T/)[0],
+    date: new Date(state.date).toISOString(),
     category: state.category,
     monetaryType: state.type,
   }
