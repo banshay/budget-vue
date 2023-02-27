@@ -6,7 +6,7 @@
           {{ visualisationPeriodDisplay[visualisationPeriod] }}
         </p>
         <p class="text-gray-200 text-7xl">
-          {{ balance > 0 ? "+" : "" }}{{ balance }}
+          {{ moneyStore.balance > 0 ? "+" : "" }}{{ moneyStore.balance }}
           <span class="text-5xl">CHF</span>
         </p>
       </div>
@@ -14,7 +14,7 @@
         <div class="w-2/5">
           <div class="m-10 text-gray-200 w-full">
             <p class="text-4xl text-left">Activity</p>
-            <div class="flex" v-for="(item, i) in history" :key="i">
+            <div class="flex" v-for="(item, i) in moneyStore.activity" :key="i">
               <div class="ml-2 text-left">{{ item.date }}</div>
               <div class="mx-12 text-left">{{ item.category }}</div>
               <div class="flex-grow text-right">
@@ -34,9 +34,14 @@
           <cog-component class="m-4 w-16 h-16 fill-current text-gray-200" />
         </div>
       </router-link>
-      <router-link to="/budgetplan">
+      <!--      <router-link to="/budgetplan">-->
+      <!--        <div class="items-end">-->
+      <!--          <plan-component class="m-4 w-16 h-16 fill-current text-gray-200" />-->
+      <!--        </div>-->
+      <!--      </router-link>-->
+      <router-link to="/overview">
         <div class="items-end">
-          <plan-component class="m-4 w-16 h-16 fill-current text-gray-200" />
+          <table-component class="w-16 m-4 h-16 fill-current text-gray-200" />
         </div>
       </router-link>
       <div
@@ -62,24 +67,22 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
-import type { MonetaryRecord } from "@/types/moneyTypes"
+import { onMounted } from "vue"
 import { useMoneyStore } from "@/stores/money/money"
 import { useOptionStore } from "@/stores/options/options"
 import { visualisationPeriodDisplay } from "@/types/optionTypes"
 import CogComponent from "@/assets/cog.svg?component"
-import PlanComponent from "@/assets/plan.svg?component"
+import TableComponent from "@/assets/table.svg?component"
 
 const moneyStore = useMoneyStore()
 const optionStore = useOptionStore()
 
-const balance = ref<string>("")
-const history = ref<MonetaryRecord[]>([])
-
 onMounted(async () => {
   await optionStore.loadOptions()
 
-  balance.value = await moneyStore.loadBalance()
-  history.value = await moneyStore.loadActivity()
+  const searchParam = new URLSearchParams(window.location.search)
+
+  await moneyStore.loadBalance(searchParam.get("date"))
+  await moneyStore.loadActivity()
 })
 </script>

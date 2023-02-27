@@ -3,7 +3,7 @@ import Home from "../views/HomeView.vue"
 import Add from "@/views/AddView.vue"
 import Options from "@/views/OptionsView.vue"
 import SignIn from "@/views/SignInView.vue"
-import Budgetplan from "@/views/BudgetplanView.vue"
+import Overview from "@/views/OverviewView.vue"
 import { useTokenStore } from "@/stores/token"
 
 const routes = [
@@ -28,9 +28,9 @@ const routes = [
     component: Options,
   },
   {
-    path: "/budgetplan",
-    name: "Budgetplan",
-    component: Budgetplan,
+    path: "/overview",
+    name: "Overview",
+    component: Overview,
   },
 ]
 

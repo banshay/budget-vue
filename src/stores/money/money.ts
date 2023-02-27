@@ -1,28 +1,30 @@
 import { defineStore } from "pinia"
 import { gql } from "graphql-request"
 import { useGraphQL } from "@/stores/graphql"
-import type { Budgetplan, MonetaryRecord } from "@/types/moneyTypes"
+import type { MonetaryRecord } from "@/types/moneyTypes"
 
 interface State {
-  budgetplan: Budgetplan | null
+  balance: string | null
+  activity: MonetaryRecord[]
 }
 
 export const useMoneyStore = defineStore("money", {
   state: (): State => ({
-    budgetplan: null,
+    balance: null,
+    activity: [],
   }),
   actions: {
-    async loadBalance() {
+    async loadBalance(date?: string) {
       const graphql = useGraphQL()
       const query = gql`
-        {
-          budget {
+        query Budget($date: String) {
+          budget(date: $date) {
             balance
           }
         }
       `
-      const data = await graphql.client?.request(query)
-      return data.budget.balance
+      const data = await graphql.client?.request(query, { date })
+      this.balance = data?.budget?.balance
     },
 
     async loadActivity() {
@@ -37,7 +39,7 @@ export const useMoneyStore = defineStore("money", {
         }
       `
       const data = await graphql.client?.request(query)
-      return data.monetaryHistory
+      this.activity = data?.monetaryHistory
     },
 
     async saveMoney(moneyRecord: MonetaryRecord) {
@@ -56,70 +58,6 @@ export const useMoneyStore = defineStore("money", {
       }
 
       return graphql.client?.request(query, input)
-    },
-
-    async loadBudgetplan() {
-      const graphql = useGraphQL()
-      const query = gql`
-        {
-          budgetplan {
-            planningPeriod
-            categories {
-              category
-              total
-            }
-            currentSpending {
-              category
-              spending
-            }
-          }
-        }
-      `
-      const data = await graphql.client?.request(query)
-      this.budgetplan = data.budgetplan
-    },
-
-    async saveBudgetplan(budgetplan: Budgetplan) {
-      const graphql = useGraphQL()
-      const query = gql`
-        mutation ($input: BudgetplanInput) {
-          saveBudgetplan(budgetplan: $input) {
-            planningPeriod
-            categories {
-              category
-              total
-            }
-            currentSpending {
-              category
-              spending
-            }
-          }
-        }
-      `
-
-      const input = {
-        input: {
-          ...budgetplan,
-          categories: [...budgetplan.categories.filter((x) => x.category)],
-        },
-      }
-
-      const data = await graphql.client?.request(query, input)
-      this.budgetplan = data.saveBudgetplan
-    },
-
-    async deleteBudgetplan() {
-      const graphql = useGraphQL()
-      const query = gql`
-        mutation {
-          deleteBudgetplan
-        }
-      `
-
-      const success = await graphql.client?.request(query)
-      if (success) {
-        this.budgetplan = null
-      }
     },
   },
 })
