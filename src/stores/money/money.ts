@@ -14,7 +14,7 @@ export const useMoneyStore = defineStore("money", {
     activity: [],
   }),
   actions: {
-    async loadBalance(date?: string) {
+    async loadBalance(date: string | null) {
       const graphql = useGraphQL()
       const query = gql`
         query Budget($date: String) {

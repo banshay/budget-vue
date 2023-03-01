@@ -7,8 +7,5 @@ export const visualisationPeriodDisplay = {
 export interface Options {
   visualisationPeriod: string
   rolloverPolicy: string
-}
-
-interface State {
-  loaded: boolean
+  timezone: string
 }

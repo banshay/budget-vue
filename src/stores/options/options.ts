@@ -7,6 +7,8 @@ export const useOptionStore = defineStore("option", {
   state: () => ({
     visualisationPeriod: "",
     rolloverPolicy: "",
+    timezone: "",
+    availableTimezones: [],
     loaded: false,
   }),
   actions: {
@@ -23,6 +25,7 @@ export const useOptionStore = defineStore("option", {
           updateOption(option: $input) {
             visualisationPeriod
             rolloverPolicy
+            timezone
           }
         }
       `
@@ -38,6 +41,7 @@ export const useOptionStore = defineStore("option", {
           option {
             visualisationPeriod
             rolloverPolicy
+            timezone
           }
         }
       `
@@ -49,6 +53,18 @@ export const useOptionStore = defineStore("option", {
     updateOptions(options: Options) {
       this.visualisationPeriod = options.visualisationPeriod
       this.rolloverPolicy = options.rolloverPolicy
+      this.timezone = options.timezone
+    },
+    async loadTimezones() {
+      const graphql = useGraphQL()
+
+      const query = gql`
+        {
+          availableTimezones
+        }
+      `
+      const data = await graphql.client?.request(query)
+      this.availableTimezones = data.availableTimezones
     },
   },
 })

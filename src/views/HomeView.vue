@@ -1,19 +1,19 @@
 <template>
-  <div class="h-screen flex">
-    <div class="flex-grow flex flex-col">
-      <div class="flex-grow flex flex-col justify-center items-center">
-        <p class="text-gray-200 self-center italic">
+  <div class="flex h-screen">
+    <div class="flex flex-grow flex-col">
+      <div class="flex flex-grow flex-col items-center justify-center">
+        <p class="self-center italic text-gray-200">
           {{ visualisationPeriodDisplay[visualisationPeriod] }}
         </p>
-        <p class="text-gray-200 text-7xl">
+        <p class="text-7xl text-gray-200">
           {{ moneyStore.balance > 0 ? "+" : "" }}{{ moneyStore.balance }}
           <span class="text-5xl">CHF</span>
         </p>
       </div>
-      <div class="mt-auto flex justify-between items-end">
+      <div class="mt-auto flex items-end justify-between">
         <div class="w-2/5">
-          <div class="m-10 text-gray-200 w-full">
-            <p class="text-4xl text-left">Activity</p>
+          <div class="m-10 w-full text-gray-200">
+            <p class="text-left text-4xl">Activity</p>
             <div class="flex" v-for="(item, i) in moneyStore.activity" :key="i">
               <div class="ml-2 text-left">{{ item.date }}</div>
               <div class="mx-12 text-left">{{ item.category }}</div>
@@ -31,26 +31,21 @@
     <div class="flex flex-col">
       <router-link to="/options">
         <div class="items-end">
-          <cog-component class="m-4 w-16 h-16 fill-current text-gray-200" />
+          <cog-component class="m-4 h-16 w-16 fill-current text-gray-200" />
         </div>
       </router-link>
-      <!--      <router-link to="/budgetplan">-->
-      <!--        <div class="items-end">-->
-      <!--          <plan-component class="m-4 w-16 h-16 fill-current text-gray-200" />-->
-      <!--        </div>-->
-      <!--      </router-link>-->
       <router-link to="/overview">
         <div class="items-end">
-          <table-component class="w-16 m-4 h-16 fill-current text-gray-200" />
+          <table-component class="m-4 h-16 w-16 fill-current text-gray-200" />
         </div>
       </router-link>
       <div
-        class="items-end mt-auto m-4 w-16 h-16 bg-lime-500 hover:bg-lime-400 rounded-full"
+        class="m-4 mt-auto h-16 w-16 items-end rounded-full bg-lime-500 hover:bg-lime-400"
       >
         <router-link to="/add">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-8 w-8 fill-current text-gray-200 m-auto h-full"
+            class="m-auto h-8 h-full w-8 fill-current text-gray-200"
             viewBox="0 0 20 20"
             fill="currentColor"
           >

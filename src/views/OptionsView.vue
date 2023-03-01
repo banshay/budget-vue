@@ -1,10 +1,10 @@
 <template>
   <Suspense>
     <template #default>
-      <div class="mx-auto pt-6 pb-6 w-3/6 h-screen bg-stone-700">
-        <div class="mx-auto w-4/5 flex flex-col justify-around h-2/5">
+      <div class="mx-auto h-screen w-3/6 bg-stone-700 pt-6 pb-6">
+        <div class="mx-auto flex h-2/5 w-4/5 flex-col justify-around">
           <div class="flex flex-col">
-            <div class="flex justify-between mb-6">
+            <div class="mb-6 flex justify-between">
               <label for="vis-period" class="text-gray-200"
                 >Visualisation Period</label
               >
@@ -18,9 +18,9 @@
                 <option value="MONTHLY">Monthly</option>
               </select>
             </div>
-            <div class="flex justify-between">
+            <div class="mb-6 flex justify-between">
               <label for="rollover" class="text-gray-200"
-                >Rollover Policy (Coming soon)</label
+                >Rollover Policy</label
               >
               <select
                 name="rollover"
@@ -31,11 +31,27 @@
                 <option value="DIVIDED">Divided</option>
               </select>
             </div>
+            <div class="flex justify-between">
+              <label for="timezone" class="text-gray-200"> Timezone </label>
+              <select
+                name="timezone"
+                id="timezone"
+                v-model="optionStore.timezone"
+              >
+                <option
+                  :key="timezone"
+                  v-for="timezone in optionStore.availableTimezones.sort()"
+                  :value="timezone"
+                >
+                  {{ timezone }}
+                </option>
+              </select>
+            </div>
           </div>
           <div class="self-start">
             <router-link to="/">
               <button
-                class="p-2 bg-red-600 hover:bg-red-500 rounded text-gray-200"
+                class="rounded bg-red-600 p-2 text-gray-200 hover:bg-red-500"
               >
                 Back
               </button>
@@ -56,6 +72,7 @@ const optionStore = useOptionStore()
 
 onMounted(async () => {
   if (!optionStore.loaded) {
+    await optionStore.loadTimezones()
     await optionStore.loadOptions()
   }
 })
@@ -64,6 +81,7 @@ watch(optionStore, () =>
   optionStore.updateOption({
     visualisationPeriod: optionStore.visualisationPeriod,
     rolloverPolicy: optionStore.rolloverPolicy,
+    timezone: optionStore.timezone,
   })
 )
 </script>
