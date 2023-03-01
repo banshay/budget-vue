@@ -71,8 +71,8 @@ import { useOptionStore } from "@/stores/options/options"
 const optionStore = useOptionStore()
 
 onMounted(async () => {
+  await optionStore.loadTimezones()
   if (!optionStore.loaded) {
-    await optionStore.loadTimezones()
     await optionStore.loadOptions()
   }
 })
