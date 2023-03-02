@@ -1,6 +1,6 @@
 <template>
-  <div class="mx-auto pt-6 pb-6 w-3/6 h-screen bg-stone-700">
-    <div class="mx-auto w-4/5 flex flex-col justify-around h-2/5">
+  <div class="mx-auto h-screen w-3/6 bg-stone-700 pt-6 pb-6">
+    <div class="mx-auto flex h-2/5 w-4/5 flex-col justify-around">
       <div class="flex flex-col px-4 text-gray-200">
         <div>
           <input
@@ -40,12 +40,18 @@
           placeholder="Category"
         />
       </div>
-      <div class="px-4 flex justify-between">
+      <div class="flex justify-between px-4">
         <input
-          class="flex-grow mr-5"
+          class="mr-5 flex-grow"
           v-model="state.date"
           type="date"
           placeholder="Date"
+        />
+        <input
+          class="mr-5 flex-grow"
+          v-model="state.end"
+          type="date"
+          placeholder="End"
         />
         <input
           class="flex-grow"
@@ -56,13 +62,13 @@
       </div>
       <div class="flex justify-around">
         <button
-          class="bg-red-600 hover:bg-red-500 text-gray-200 px-2 py-2 rounded"
+          class="rounded bg-red-600 px-2 py-2 text-gray-200 hover:bg-red-500"
           @click="discard"
         >
           Discard
         </button>
         <button
-          class="bg-lime-700 hover:bg-lime-600 text-gray-200 px-2 py-2 rounded"
+          class="rounded bg-lime-700 px-2 py-2 text-gray-200 hover:bg-lime-600"
           @click="add"
         >
           Save
@@ -84,6 +90,7 @@ const initial = {
   amount: null,
   type: Object.keys(MonetaryType)[0],
   date: new Date(),
+  end: new Date(),
 }
 const router = useRouter()
 const moneyStore = useMoneyStore()
@@ -94,6 +101,7 @@ const add = async () => {
   const input: MonetaryRecord = {
     amount: (state?.amount || 0) * state.expense,
     date: new Date(state.date).toISOString(),
+    end: new Date(state.end).toISOString(),
     category: state.category,
     monetaryType: state.type,
   }

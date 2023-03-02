@@ -1,5 +1,6 @@
 export interface MonetaryRecord {
   date: string
+  end: string
   category: string
   amount: number
   monetaryType: string
