@@ -6,6 +6,17 @@ export interface MonetaryRecord {
   monetaryType: string
 }
 
+export type MonetarySlice = {
+  amount: string
+  category: string
+  sourceId: string
+}
+
+export type ExpenseByDay = {
+  day: string
+  expenses: MonetarySlice[]
+}
+
 export enum MonetaryType {
   ONE_TIME = "One Time",
   RECURRING_YEARLY = "Recurring Yearly",
