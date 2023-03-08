@@ -7,8 +7,8 @@
     </div>
 
     <div class="flex grow flex-col items-center">
-      <div class="flex flex-col">
-        <div class="flex self-end">
+      <div class="flex w-3/5 flex-col">
+        <div class="flex self-start">
           <div
             @click="goBack()"
             class="cursor-pointer select-none rounded-l-full border-r-4 border-stone-900 bg-stone-700 pt-1.5 pl-4 pr-2 font-bold tracking-wider text-gray-200"
@@ -25,10 +25,10 @@
             &gt;
           </div>
         </div>
-        <div class="mt-6 bg-stone-800 text-gray-200">
-          <table class="mx-auto">
+        <div class="mt-6 text-gray-200">
+          <table class="mr-auto bg-stone-800">
             <tr class="border-b-2">
-              <th class="border-r-2"></th>
+              <th class="border-r-2 py-6"></th>
               <th
                 v-for="(_, date) in moneyByDateSorted"
                 :key="date"
@@ -43,7 +43,7 @@
               :key="category"
               class="border-b"
             >
-              <td class="border-r-2 pr-4 pl-1">{{ category }}</td>
+              <td class="border-r-2 py-2 pr-4 pl-2">{{ category }}</td>
               <td
                 v-for="(expenses, date) in moneyByDateSorted"
                 :key="date"
