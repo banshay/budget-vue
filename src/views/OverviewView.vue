@@ -7,40 +7,63 @@
     </div>
 
     <div class="flex grow flex-col items-center">
-      <div class="mt-12 bg-stone-800 text-gray-200">
-        <table class="mx-auto">
-          <tr class="border-b-2">
-            <th class="border-r-2"></th>
-            <th
-              v-for="(_, date) in moneyByDateSorted"
-              :key="date"
-              class="px-6 text-center"
-              :class="{ 'border-x-2 border-t-2': isCenterDate(date) }"
-            >
-              {{ createDateDisplay(date) }}
-            </th>
-          </tr>
-          <tr v-for="category in categoryList" :key="category" class="border-b">
-            <td class="border-r-2 pr-4 pl-1">{{ category }}</td>
-            <td
-              v-for="(expenses, date) in moneyByDateSorted"
-              :key="date"
-              class="relative cursor-pointer pr-2 text-right tracking-wider"
-              :class="{ 'border-x-2 border-b-2': isCenterDate(date) }"
-            >
-              <div
-                v-for="slice in moneyStore.getDateCategoryExpense(
-                  date,
-                  category
-                )"
-                :key="slice.sourceId"
-                @click="openExpenseModal(slice)"
+      <div class="flex flex-col">
+        <div class="flex self-end">
+          <div
+            @click="goBack()"
+            class="cursor-pointer rounded-l-full border-r-4 border-stone-900 bg-stone-700 pt-1.5 pl-4 pr-2 font-bold tracking-wider text-gray-200"
+          >
+            &lt;
+          </div>
+          <div class="bg-stone-700 px-3 py-2 tracking-wider text-gray-200">
+            {{ `${fromDateLocalized} - ${toDateLocalized}` }}
+          </div>
+          <div
+            @click="goForward()"
+            class="cursor-pointer rounded-r-full border-l-4 border-stone-900 bg-stone-700 pt-1.5 pr-4 pl-2 font-bold tracking-wider text-gray-200"
+          >
+            &gt;
+          </div>
+        </div>
+        <div class="mt-6 bg-stone-800 text-gray-200">
+          <table class="mx-auto">
+            <tr class="border-b-2">
+              <th class="border-r-2"></th>
+              <th
+                v-for="(_, date) in moneyByDateSorted"
+                :key="date"
+                class="px-6 text-center"
+                :class="{ 'border-x-2 border-t-2': isToday(date) }"
               >
-                {{ slice.amount }}
-              </div>
-            </td>
-          </tr>
-        </table>
+                {{ createDateDisplay(date) }}
+              </th>
+            </tr>
+            <tr
+              v-for="category in categoryList"
+              :key="category"
+              class="border-b"
+            >
+              <td class="border-r-2 pr-4 pl-1">{{ category }}</td>
+              <td
+                v-for="(expenses, date) in moneyByDateSorted"
+                :key="date"
+                class="relative cursor-pointer pr-2 text-right tracking-wider"
+                :class="{ 'border-x-2 border-b-2': isToday(date) }"
+              >
+                <div
+                  v-for="slice in moneyStore.getDateCategoryExpense(
+                    date,
+                    category
+                  )"
+                  :key="slice.sourceId"
+                  @click="openExpenseModal(slice)"
+                >
+                  {{ slice.amount }}
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -111,16 +134,18 @@ const categoryList = computed(
     )
 )
 
+const today = computed<string>(() => toISODateNoTime(new Date()))
+
 const tomorrow = computed<string>(() => {
   let temp = new Date()
-  temp.setDate(centerDate.value.getDate() + 1)
-  return temp.toISOString().split("T")[0]
+  temp.setDate(new Date(today.value).getDate() + 1)
+  return toISODateNoTime(temp)
 })
 
 const yesterday = computed<string>(() => {
   let temp = new Date()
-  temp.setDate(centerDate.value.getDate() - 1)
-  return temp.toISOString().split("T")[0]
+  temp.setDate(new Date(today.value).getDate() - 1)
+  return toISODateNoTime(temp)
 })
 
 const moneyByDateSorted = computed(() => {
@@ -135,45 +160,89 @@ const moneyByDateSorted = computed(() => {
     )
 })
 
-function isCenterDate(date: string) {
-  return date === centerDate.value.toISOString().split("T")[0]
+function isToday(date: string) {
+  return date === today.value
 }
 
 function createDateDisplay(dateStr: string) {
-  if (isCenterDate(dateStr)) {
+  if (isToday(dateStr)) {
     return "Today"
   }
   const date = new Date(dateStr)
-  const [isoDate] = date.toISOString().split("T")
+  const isoDate = toISODateNoTime(date)
   if (isoDate === tomorrow.value) {
     return "Tomorrow"
   }
   if (isoDate === yesterday.value) {
     return "Yesterday"
   }
-  const [weekday] = date
-    .toLocaleDateString("en-GB", { weekday: "long" })
-    .split(",")
-  return weekday
+  const aWeekBack = new Date()
+  aWeekBack.setDate(new Date(today.value).getDate() - 7)
+  if (aWeekBack.getDate() < date.getDate()) {
+    const [weekday] = date
+      .toLocaleDateString("en-GB", { weekday: "long" })
+      .split(",")
+    return weekday
+  }
+  return toShortDateString(date)
+}
+
+const fromDate = computed(() => {
+  let fromTemp = new Date(centerDate.value)
+  fromTemp.setDate(centerDate.value.getDate() - 3)
+  return toISODateNoTime(fromTemp)
+})
+
+const fromDateLocalized = computed(() => {
+  const temp = new Date(fromDate.value)
+  return toShortDateString(temp)
+})
+
+const toDateLocalized = computed(() => {
+  const temp = new Date(toDate.value)
+  return toShortDateString(temp)
+})
+
+const toDate = computed(() => {
+  let toTemp = new Date(centerDate.value)
+  toTemp.setDate(centerDate.value.getDate() + 2)
+  return toISODateNoTime(toTemp)
+})
+
+function goBack() {
+  centerDate.value = new Date(fromDate.value)
+}
+
+function goForward() {
+  let temp = new Date()
+  temp.setDate(new Date(toDate.value).getDate() + 1)
+  centerDate.value = temp
+}
+
+function loadData() {
+  moneyStore.loadMoneyByDate(fromDate.value, toDate.value)
 }
 
 watchEffect(() => {
   loadData()
 })
 
-function loadData() {
-  let fromTemp = new Date(centerDate.value)
-  let toTemp = new Date(centerDate.value)
-  fromTemp.setDate(centerDate.value.getDate() - 3)
-  toTemp.setDate(centerDate.value.getDate() + 2)
-  const [from] = fromTemp.toISOString().split("T")
-  const [to] = toTemp.toISOString().split("T")
-  moneyStore.loadMoneyByDate(from, to)
-}
-
 const sortByDate = (a: string, b: string) => {
   const adate = new Date(a[0])
   const bdate = new Date(b[0])
   return adate.getDate() >= bdate.getDate() ? -1 : 1
+}
+
+function toISODateNoTime(date: Date): string {
+  const offset = date.getTimezoneOffset()
+  const newDate = new Date(date.getTime() - offset * 60 * 1000)
+  return newDate.toISOString().split("T")[0]
+}
+
+function toShortDateString(date: Date): string {
+  const [day, month] = date
+    .toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })
+    .split(".")
+  return `${day}.${month}`
 }
 </script>
