@@ -11,7 +11,7 @@
         <div class="flex self-end">
           <div
             @click="goBack()"
-            class="cursor-pointer rounded-l-full border-r-4 border-stone-900 bg-stone-700 pt-1.5 pl-4 pr-2 font-bold tracking-wider text-gray-200"
+            class="cursor-pointer select-none rounded-l-full border-r-4 border-stone-900 bg-stone-700 pt-1.5 pl-4 pr-2 font-bold tracking-wider text-gray-200"
           >
             &lt;
           </div>
@@ -20,7 +20,7 @@
           </div>
           <div
             @click="goForward()"
-            class="cursor-pointer rounded-r-full border-l-4 border-stone-900 bg-stone-700 pt-1.5 pr-4 pl-2 font-bold tracking-wider text-gray-200"
+            class="cursor-pointer select-none rounded-r-full border-l-4 border-stone-900 bg-stone-700 pt-1.5 pr-4 pl-2 font-bold tracking-wider text-gray-200"
           >
             &gt;
           </div>
