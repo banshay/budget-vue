@@ -28,7 +28,7 @@
                 v-model="optionStore.rolloverPolicy"
               >
                 <option value="NEXT_PERIOD">Next Period</option>
-                <option value="DIVIDED">Divided</option>
+                <option value="MONTH">Month</option>
               </select>
             </div>
             <div class="flex justify-between">
