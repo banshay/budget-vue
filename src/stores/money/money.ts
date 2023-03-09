@@ -110,6 +110,21 @@ export const useMoneyStore = defineStore("money", {
     ): MonetarySlice[] | undefined {
       return this.categoryDateMap[`${date}_${category}`]
     },
+
+    async doRollover() {
+      const graphql = useGraphQL()
+      const query = gql`
+        mutation ($range: DateRange) {
+          rollover(range: $range)
+        }
+      `
+      await graphql.client?.request(query, {
+        range: {
+          from: "2023-03-01",
+          to: new Date().toISOString().split("T")[0],
+        },
+      })
+    },
   },
 })
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col">
+  <div class="flex h-full flex-col">
     <div>
       <router-link to="/">
         <arrow-left class="m-4 h-16 w-16 text-gray-200" />
@@ -66,6 +66,7 @@
         </div>
       </div>
     </div>
+    <button class="align-end" @click="moneyStore.doRollover()">Rollover</button>
   </div>
 </template>
 
