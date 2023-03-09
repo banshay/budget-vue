@@ -135,6 +135,11 @@ const categoryList = computed(
 )
 
 const today = computed<string>(() => toISODateNoTime(new Date()))
+const aWeekBack = computed<Date>(() => {
+  let temp = new Date()
+  temp.setDate(new Date(today.value).getDate() - 7)
+  return temp
+})
 
 const tomorrow = computed<string>(() => {
   let temp = new Date()
@@ -176,9 +181,7 @@ function createDateDisplay(dateStr: string) {
   if (isoDate === yesterday.value) {
     return "Yesterday"
   }
-  const aWeekBack = new Date()
-  aWeekBack.setDate(new Date(today.value).getDate() - 7)
-  if (aWeekBack.getDate() < date.getDate()) {
+  if (aWeekBack.value.getDate() < date.getDate()) {
     const [weekday] = date
       .toLocaleDateString("en-GB", { weekday: "long" })
       .split(",")

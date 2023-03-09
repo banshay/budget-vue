@@ -89,6 +89,7 @@ export const useMoneyStore = defineStore("money", {
               category
               sourceId
             }
+            sum
           }
         }
       `
