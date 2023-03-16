@@ -24,6 +24,7 @@ export enum MonetaryType {
   RECURRING_WEEKLY = "Recurring Weekly",
   RECURRING_BI_WEEKLY = "Recurring Bi-Weekly",
   RECURRING_DAILY = "Recurring Daily",
+  RECURRING_RANGE = "Recurring Range",
 }
 
 export interface Budgetplan {
