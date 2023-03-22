@@ -1,11 +1,7 @@
 import {defineStore} from "pinia"
 import {gql} from "graphql-request"
 import {useGraphQL} from "@/stores/graphql"
-import type {
-  ExpenseByDay,
-  MonetaryRecord,
-  MonetarySlice,
-} from "@/types/moneyTypes"
+import type {ExpenseByDay, MonetaryRecord, MonetarySlice,} from "@/types/moneyTypes"
 
 interface State {
   balance: string | null
@@ -115,7 +111,7 @@ export const useMoneyStore = defineStore("money", {
       return slices;
     },
     _collapseRollover(slices: MonetarySlice[]) {
-      const ret = [slices.reduce((prev: MonetarySlice, current: MonetarySlice) => {
+      return [slices.reduce((prev: MonetarySlice, current: MonetarySlice) => {
         if (!prev.amount) {
           return current
         }
@@ -125,7 +121,6 @@ export const useMoneyStore = defineStore("money", {
           amount: ((Number.parseFloat(prev.amount) ?? 0) + (Number.parseFloat(current.amount) ?? 0)).toFixed(2)
         }
       }, {} as MonetarySlice)]
-      return ret
     },
 
     async doRollover() {
