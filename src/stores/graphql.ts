@@ -10,7 +10,7 @@ export const useGraphQL = defineStore("graphql", {
     client: null as GraphQLClient | null,
   }),
   actions: {
-    async createGraphQlClient() {
+     createGraphQlClient() {
       const tokenStore = useTokenStore()
 
       this.client = new GraphQLClient(host, {

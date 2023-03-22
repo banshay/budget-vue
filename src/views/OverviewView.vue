@@ -30,8 +30,8 @@
             <tr class="border-b-2">
               <th class="border-r-2 py-6"></th>
               <th
-                v-for="(_, date) in moneyByDateSorted"
-                :key="date"
+                v-for="(_, date, index) in moneyByDateSorted"
+                :key="index"
                 class="px-6 text-center"
                 :class="{ 'border-x-2 border-t-2': isToday(date) }"
               >
@@ -45,8 +45,8 @@
             >
               <td class="border-r-2 py-2 pr-4 pl-2">{{ category }}</td>
               <td
-                v-for="(expenses, date) in moneyByDateSorted"
-                :key="date"
+                v-for="(expenses, date, index) in moneyByDateSorted"
+                :key="index"
                 class="relative cursor-pointer pr-2 text-right tracking-wider"
                 :class="{ 'border-x-2 border-b-2': isToday(date) }"
               >
@@ -214,12 +214,14 @@ const toDate = computed(() => {
 })
 
 function goBack() {
-  centerDate.value = new Date(fromDate.value)
+  let temp = new Date()
+  temp.setDate( new Date(fromDate.value).getDate() -2)
+  centerDate.value = temp
 }
 
 function goForward() {
   let temp = new Date()
-  temp.setDate(new Date(toDate.value).getDate() + 1)
+  temp.setDate(new Date(toDate.value).getDate() + 3)
   centerDate.value = temp
 }
 
@@ -227,14 +229,11 @@ function loadData() {
   moneyStore.loadMoneyByDate(fromDate.value, toDate.value)
 }
 
-watchEffect(() => {
-  loadData()
-})
 
 const sortByDate = (a: string, b: string) => {
-  const adate = new Date(a[0])
-  const bdate = new Date(b[0])
-  return adate.getDate() >= bdate.getDate() ? -1 : 1
+  const adate = new Date(a)
+  const bdate = new Date(b)
+  return adate.getDate() >= bdate.getDate() ? 1 : -1
 }
 
 function toISODateNoTime(date: Date): string {
@@ -249,4 +248,8 @@ function toShortDateString(date: Date): string {
     .split(".")
   return `${day}.${month}`
 }
+
+watchEffect(() => {
+  loadData()
+})
 </script>
