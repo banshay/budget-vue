@@ -103,14 +103,14 @@ export const useMoneyStore = defineStore("money", {
     getDateCategoryExpense(
         date: string,
         category: string
-    ): MonetarySlice[] | undefined {
+    ): MonetarySlice[] {
       const slices = this.categoryDateMap[`${date}_${category}`]
       if (category === "Rollover") {
         return this._collapseRollover(slices)
       }
       return slices;
     },
-    _collapseRollover(slices: MonetarySlice[]) {
+    _collapseRollover(slices: MonetarySlice[]): MonetarySlice[] {
       return [slices.reduce((prev: MonetarySlice, current: MonetarySlice) => {
         if (!prev.amount) {
           return current
@@ -120,7 +120,7 @@ export const useMoneyStore = defineStore("money", {
           category: "Rollover",
           amount: ((Number.parseFloat(prev.amount) ?? 0) + (Number.parseFloat(current.amount) ?? 0)).toFixed(2)
         }
-      }, {} as MonetarySlice)]
+      }, {amount: "0", category: "Rollover", sourceId: ""})]
     },
 
     async doRollover() {
