@@ -111,9 +111,10 @@ export const useMoneyStore = defineStore("money", {
       return slices;
     },
     _collapseRollover(slices: MonetarySlice[]): MonetarySlice[] {
-      console.log("slices", slices)
+      if(!slices){
+        return []
+      }
       return [slices.reduce((prev: MonetarySlice, current: MonetarySlice) => {
-        console.log("prev", prev, "current", current)
         return {
           sourceId: "",
           category: "Rollover",
