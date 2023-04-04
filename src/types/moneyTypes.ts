@@ -7,7 +7,13 @@ export interface MonetaryRecord {
   title: string
 }
 
+export interface RecurringRecord extends MonetaryRecord {
+  daily: number
+  monthly: number
+}
+
 export type MonetarySlice = {
+  title: string
   amount: string
   category: string
   sourceId: string

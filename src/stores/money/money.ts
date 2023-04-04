@@ -5,6 +5,7 @@ import type {
   ExpenseByDay,
   MonetaryRecord,
   MonetarySlice,
+  RecurringRecord,
 } from "@/types/moneyTypes"
 import { Temporal } from "@js-temporal/polyfill"
 
@@ -13,6 +14,7 @@ interface State {
   activity: MonetaryRecord[]
   moneyByDate: Record<string, MonetarySlice[]>
   categoryDateMap: Record<string, MonetarySlice[]>
+  recurringRecords: RecurringRecord[]
 }
 
 export const useMoneyStore = defineStore("money", {
@@ -21,6 +23,7 @@ export const useMoneyStore = defineStore("money", {
     activity: [],
     moneyByDate: {},
     categoryDateMap: {},
+    recurringRecords: [],
   }),
   actions: {
     async loadBalance(date: string | null) {
@@ -49,6 +52,26 @@ export const useMoneyStore = defineStore("money", {
       `
       const data = await graphql.client?.request(query)
       this.activity = data?.monetaryHistory
+    },
+
+    async loadRecurringRecords() {
+      const graphql = useGraphQL()
+      const query = gql`
+        {
+          recurringOverview {
+            amount
+            category
+            title
+            daily
+            monthly
+            date
+            end
+          }
+        }
+      `
+
+      const data = await graphql.client?.request(query)
+      this.recurringRecords = data?.recurringOverview
     },
 
     async saveMoney(moneyRecord: MonetaryRecord) {
@@ -120,6 +143,7 @@ export const useMoneyStore = defineStore("money", {
         slices.reduce(
           (prev: MonetarySlice, current: MonetarySlice) => {
             return {
+              title: "Rollover",
               sourceId: "",
               category: "Rollover",
               amount: (
@@ -128,7 +152,7 @@ export const useMoneyStore = defineStore("money", {
               ).toFixed(2),
             }
           },
-          { amount: "0", category: "Rollover", sourceId: "" }
+          { title: "", amount: "0", category: "Rollover", sourceId: "" }
         ),
       ]
     },

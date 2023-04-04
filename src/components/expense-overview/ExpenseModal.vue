@@ -5,6 +5,7 @@
     content-class="max-w-xl flex flex-col p-4 bg-stone-700 text-gray-200"
   >
     <div class="h-20">
+      <h1>{{ slice?.title }}</h1>
       <h1>{{ slice?.category }}</h1>
       <div>{{ slice?.amount }}</div>
     </div>
