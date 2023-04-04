@@ -104,6 +104,7 @@ const add = async () => {
     end: new Date(state.end).toISOString(),
     category: state.category,
     monetaryType: state.type,
+    title: state.category,
   }
   await moneyStore.saveMoney(input)
   await router.push("/")

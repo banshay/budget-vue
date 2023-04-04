@@ -4,6 +4,7 @@ export interface MonetaryRecord {
   category: string
   amount: number
   monetaryType: string
+  title: string
 }
 
 export type MonetarySlice = {
