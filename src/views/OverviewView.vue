@@ -2,7 +2,7 @@
   <div class="flex h-full flex-col">
     <div>
       <router-link to="/">
-        <arrow-left class="m-4 h-16 w-16 text-gray-200"/>
+        <arrow-left class="m-4 h-16 w-16 text-gray-200" />
       </router-link>
     </div>
 
@@ -10,8 +10,8 @@
       <div class="flex w-3/5 flex-col">
         <div class="flex self-start">
           <div
-              @click="goBack()"
-              class="cursor-pointer select-none rounded-l-full border-r-4 border-stone-900 bg-stone-700 pt-1.5 pl-4 pr-2 font-bold tracking-wider text-gray-200"
+            @click="goBack()"
+            class="cursor-pointer select-none rounded-l-full border-r-4 border-stone-900 bg-stone-700 pt-1.5 pl-4 pr-2 font-bold tracking-wider text-gray-200"
           >
             &lt;
           </div>
@@ -19,8 +19,8 @@
             {{ `${fromDateLocalized} - ${toDateLocalized}` }}
           </div>
           <div
-              @click="goForward()"
-              class="cursor-pointer select-none rounded-r-full border-l-4 border-stone-900 bg-stone-700 pt-1.5 pr-4 pl-2 font-bold tracking-wider text-gray-200"
+            @click="goForward()"
+            class="cursor-pointer select-none rounded-r-full border-l-4 border-stone-900 bg-stone-700 pt-1.5 pr-4 pl-2 font-bold tracking-wider text-gray-200"
           >
             &gt;
           </div>
@@ -30,33 +30,33 @@
             <tr class="border-b-2">
               <th class="border-r-2 py-6"></th>
               <th
-                  v-for="(_, date, index) in moneyByDateSorted"
-                  :key="index"
-                  class="px-6 text-center"
-                  :class="{ 'border-x-2 border-t-2': isToday(date) }"
+                v-for="(_, date, index) in moneyByDateSorted"
+                :key="index"
+                class="px-6 text-center"
+                :class="{ 'border-x-2 border-t-2': isToday(date) }"
               >
                 {{ createDateDisplay(date) }}
               </th>
             </tr>
             <tr
-                v-for="category in categoryList"
-                :key="category"
-                class="border-b"
+              v-for="category in categoryList"
+              :key="category"
+              class="border-b"
             >
               <td class="border-r-2 py-2 pr-4 pl-2">{{ category }}</td>
               <td
-                  v-for="(expenses, date, index) in moneyByDateSorted"
-                  :key="index"
-                  class="relative cursor-pointer pr-2 text-right tracking-wider"
-                  :class="{ 'border-x-2 border-b-2': isToday(date) }"
+                v-for="(expenses, date, index) in moneyByDateSorted"
+                :key="index"
+                class="relative cursor-pointer pr-2 text-right tracking-wider"
+                :class="{ 'border-x-2 border-b-2': isToday(date) }"
               >
                 <div
-                    v-for="slice in moneyStore.getDateCategoryExpense(
+                  v-for="slice in moneyStore.getDateCategoryExpense(
                     date,
                     category
                   )"
-                    :key="slice.sourceId"
-                    @click="openExpenseModal(slice)"
+                  :key="slice.sourceId"
+                  @click="openExpenseModal(slice)"
                 >
                   {{ slice.amount }}
                 </div>
@@ -71,19 +71,19 @@
 </template>
 
 <script setup lang="ts">
-import {useMoneyStore} from "@/stores/money/money"
-import {computed, ref, watch, watchEffect} from "vue"
-import type {MonetarySlice} from "@/types/moneyTypes"
+import { useMoneyStore } from "@/stores/money/money"
+import { computed, ref, watch, watchEffect } from "vue"
+import type { MonetarySlice } from "@/types/moneyTypes"
 import ArrowLeft from "@/assets/arrow-left.svg?component"
-import {useModal} from "vue-final-modal"
+import { useModal } from "vue-final-modal"
 import ExpenseModal from "@/components/expense-overview/ExpenseModal.vue"
-import {Temporal} from "@js-temporal/polyfill";
+import { Temporal } from "@js-temporal/polyfill"
 
 const moneyStore = useMoneyStore()
 
 const selectedSlice = ref<MonetarySlice | null>(null)
 
-const {open, close, patchOptions} = useModal({
+const { open, close, patchOptions } = useModal({
   component: ExpenseModal,
 })
 
@@ -110,50 +110,56 @@ function openExpenseModal(slice: MonetarySlice) {
 const centerDate = ref<Temporal.PlainDate>(Temporal.Now.plainDateISO())
 
 const categoryCounts = computed(() =>
-    Object.entries(moneyStore.moneyByDate)
+  Object.entries(moneyStore.moneyByDate)
     .flatMap((entry: [string, MonetarySlice[]]) => entry[1])
     .reduce(
-        (acc: Record<string, number>, current: MonetarySlice) => ({
-          ...acc,
-          [current.category]: (acc[current.category] ?? 0) + 1,
-        }),
-        {} as Record<string, number>
+      (acc: Record<string, number>, current: MonetarySlice) => ({
+        ...acc,
+        [current.category]: (acc[current.category] ?? 0) + 1,
+      }),
+      {} as Record<string, number>
     )
 )
 
 const categoryList = computed(
-    () =>
-        new Set(
-            Object.entries(moneyStore.moneyByDate)
-            .flatMap((entry: [string, MonetarySlice[]]) => entry[1])
-            .map((expense) => expense.category)
-            .sort((leftCategory, rightCategory) =>
-                categoryCounts.value[leftCategory] >=
-                categoryCounts.value[rightCategory]
-                    ? -1
-                    : 1
-            )
+  () =>
+    new Set(
+      Object.entries(moneyStore.moneyByDate)
+        .flatMap((entry: [string, MonetarySlice[]]) => entry[1])
+        .map((expense) => expense.category)
+        .sort((leftCategory, rightCategory) =>
+          categoryCounts.value[leftCategory] >=
+          categoryCounts.value[rightCategory]
+            ? -1
+            : 1
         )
+    )
 )
 
 const today = computed<string>(() => Temporal.Now.plainDateISO().toString())
-const aWeekBack = computed<Temporal.PlainDate>(() => Temporal.Now.plainDateISO().subtract({days: 7}))
+const aWeekBack = computed<Temporal.PlainDate>(() =>
+  Temporal.Now.plainDateISO().subtract({ days: 7 })
+)
 
-const tomorrow = computed<string>(() => Temporal.Now.plainDateISO().add({days: 1}).toString())
+const tomorrow = computed<string>(() =>
+  Temporal.Now.plainDateISO().add({ days: 1 }).toString()
+)
 
-const yesterday = computed<string>(() => Temporal.Now.plainDateISO().subtract({days: 1}).toString())
+const yesterday = computed<string>(() =>
+  Temporal.Now.plainDateISO().subtract({ days: 1 }).toString()
+)
 
 const moneyByDateSorted = computed(() => {
   return Object.keys(moneyStore.moneyByDate)
-  .map(stringDate => Temporal.PlainDate.from(stringDate))
-  .sort(Temporal.PlainDate.compare)
-  .reduce(
+    .map((stringDate) => Temporal.PlainDate.from(stringDate))
+    .sort(Temporal.PlainDate.compare)
+    .reduce(
       (acc, current) => ({
         ...acc,
         [current.toString()]: moneyStore.moneyByDate[current.toString()],
       }),
       {}
-  )
+    )
 })
 
 function isToday(date: string) {
@@ -161,21 +167,19 @@ function isToday(date: string) {
 }
 
 const daysOfWeek = [
-  "Monday"
-  , "Tuesday"
-  , "Wednesday"
-  , "Thursday"
-  , "Friday"
-  , "Saturday"
-  , "Sunday"
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ]
 
 function createDateDisplay(dateStr: string) {
   if (isToday(dateStr)) {
     return "Today"
   }
-  // const date = new Date(dateStr)
-  // const isoDate = toISODateNoTime(date)
   const isoDate: Temporal.PlainDate = Temporal.PlainDate.from(dateStr)
   if (isoDate.toString() === tomorrow.value) {
     return "Tomorrow"
@@ -189,7 +193,9 @@ function createDateDisplay(dateStr: string) {
   return toShortDateString(isoDate)
 }
 
-const fromDate = computed<Temporal.PlainDate>(() => centerDate.value.subtract({days:3}))
+const fromDate = computed<Temporal.PlainDate>(() =>
+  centerDate.value.subtract({ days: 3 })
+)
 
 const fromDateLocalized = computed<string>(() => {
   return toShortDateString(fromDate.value)
@@ -199,14 +205,16 @@ const toDateLocalized = computed<string>(() => {
   return toShortDateString(toDate.value)
 })
 
-const toDate = computed<Temporal.PlainDate>(() => centerDate.value.add({days:2}))
+const toDate = computed<Temporal.PlainDate>(() =>
+  centerDate.value.add({ days: 2 })
+)
 
 function goBack() {
-  centerDate.value = fromDate.value.subtract({days:2})
+  centerDate.value = fromDate.value.subtract({ days: 2 })
 }
 
 function goForward() {
-  centerDate.value = toDate.value.add({days:3})
+  centerDate.value = toDate.value.add({ days: 3 })
 }
 
 function loadData() {
