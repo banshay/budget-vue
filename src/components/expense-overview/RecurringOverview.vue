@@ -36,7 +36,10 @@ import { Temporal } from "@js-temporal/polyfill"
 const moneyStore = useMoneyStore()
 onMounted(() => moneyStore.loadRecurringRecords())
 
-function formatDate(datestr: string) {
+function formatDate(datestr: string): string {
+  if(!datestr){
+    return ""
+  }
   const date = Temporal.Instant.from(datestr).toZonedDateTimeISO("Europe/Paris")
   return `${date.day}.${date.month}.${date.year}`
 }
