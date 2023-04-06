@@ -37,7 +37,7 @@ const moneyStore = useMoneyStore()
 onMounted(() => moneyStore.loadRecurringRecords())
 
 function formatDate(datestr: string): string {
-  if(!datestr){
+  if (!datestr) {
     return ""
   }
   const date = Temporal.Instant.from(datestr).toZonedDateTimeISO("Europe/Paris")
