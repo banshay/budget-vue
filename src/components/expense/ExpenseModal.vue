@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import { useModal } from "vue-final-modal"
 import AddExpenseModal from "@/components/expense/AddExpenseModal.vue"
-import { ref, watch } from "vue"
+import { readonly, ref, watch } from "vue"
 import type { MonetaryRecord } from "@/types/moneyTypes"
 import { Temporal } from "@js-temporal/polyfill"
 import { useMoneyStore } from "@/stores/money/money"
@@ -19,63 +19,68 @@ const props = defineProps<ExpenseProps>()
 
 const moneyStore = useMoneyStore()
 
-const initial: MonetaryRecord = {
+const initial: MonetaryRecord = readonly({
   amount: null,
   category: "Manual",
-  date: Temporal.Now.plainDateISO.toString(),
+  date: Temporal.Now.instant().toString(),
   monetaryType: "ONE_TIME",
   title: "Manual",
-}
+})
+
 const expense = ref<MonetaryRecord>(initial)
 
-function onClosed() {
-  clearState()
-}
-
-function onSave(toSave: MonetaryRecord) {
-  console.log("Save this: ", toSave)
-  moneyStore.saveMoney(toSave)
-  clearState()
-}
-
-function onOpened() {
-  patchOptions({
-    attrs: {
-      expense: expense.value,
-      autofocus: true,
-      onClosed,
-      onSave,
-      onOpened,
-    },
-  })
-}
-
-const { open, patchOptions } = useModal({
+const modalOptions = {
   component: AddExpenseModal,
   attrs: {
     expense: expense.value,
     autofocus: false,
-    onClosed,
-    onSave,
-    onOpened,
+    onClosed: onClosed,
+    onSave: onSave,
+    onOpened: onOpened,
   },
-})
+}
+
+function onClosed() {
+  expense.value = initial
+
+  patchOptions({
+    ...modalOptions,
+    attrs: {
+      ...modalOptions.attrs,
+      expense: expense.value,
+      autofocus: false,
+    },
+  })
+}
+
+function onSave(toSave: MonetaryRecord) {
+  moneyStore.saveMoney(toSave)
+  close()
+}
+
+function onOpened() {
+  patchOptions({
+    ...modalOptions,
+    attrs: {
+      ...modalOptions.attrs,
+      expense: expense.value,
+      autofocus: true,
+    },
+  })
+}
+
+const { open, close, patchOptions } = useModal(modalOptions)
 
 watch(expense, () => {
   patchOptions({
+    ...modalOptions,
     attrs: {
+      ...modalOptions.attrs,
       expense: expense.value,
-      autofocus: true,
-      onClosed,
-      onSave,
-      onOpened,
+      autofocus: false,
     },
   })
 })
-
-function clearState() {
-  expense.value = initial
-}
 
 function openModal() {
   expense.value = props.expense ?? initial

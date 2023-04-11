@@ -7,20 +7,23 @@
   >
     <div class="flex h-full flex-col justify-between">
       <div class="grid grid-cols-4">
-        <span class="text-2xl font-bold">{{ expense.title ?? "Manual" }}</span>
+        <span class="text-2xl font-bold">{{
+          editableExpense.title ?? "Manual"
+        }}</span>
         <div></div>
         <div></div>
         <div></div>
         <input
-          id="amountInput"
+          ref="amountInput"
           class="mt-4 justify-center rounded p-2 text-black"
           type="text"
           placeholder="Amount..."
-          :v-model="expense.amount"
+          v-model="editableExpense.amount"
+          @keydown.enter="emit('save', editableExpense)"
         />
       </div>
       <button
-        @click="emit('save', expense)"
+        @click="emit('save', editableExpense)"
         class="self-end rounded bg-lime-600 px-3 py-2"
       >
         Save
@@ -42,6 +45,7 @@ const props = defineProps<{
 const emit = defineEmits<{ (e: "save", record: MonetaryRecord): void }>()
 
 const amountInput = ref<HTMLInputElement | null>(null)
+const editableExpense = ref<MonetaryRecord>({ ...props.expense })
 
 watch(
   () => props.autofocus,
