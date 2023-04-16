@@ -25,7 +25,7 @@ import type { MonetarySlice } from "@/types/moneyTypes"
 import { VueFinalModal } from "vue-final-modal"
 
 defineProps<{
-  slice?: MonetarySlice
+  slice: MonetarySlice | null
 }>()
 
 const emit = defineEmits<{

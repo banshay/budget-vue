@@ -15,6 +15,7 @@ interface State {
   moneyByDate: Record<string, MonetarySlice[]>
   categoryDateMap: Record<string, MonetarySlice[]>
   recurringRecords: RecurringRecord[]
+  monetaryRecords: Record<string, MonetaryRecord>
 }
 
 export const useMoneyStore = defineStore("money", {
@@ -24,6 +25,7 @@ export const useMoneyStore = defineStore("money", {
     moneyByDate: {},
     categoryDateMap: {},
     recurringRecords: [],
+    monetaryRecords: {},
   }),
   actions: {
     async loadBalance(date: string | null) {
@@ -54,6 +56,32 @@ export const useMoneyStore = defineStore("money", {
       this.activity = data?.monetaryHistory
     },
 
+    async loadMonetaryRecord(sourceId: string): Promise<MonetaryRecord> {
+      const cached = this.monetaryRecords[sourceId]
+      if (cached) {
+        return cached
+      }
+
+      const graphql = useGraphQL()
+      const query = gql`
+        query ($sourceId: String) {
+          monetaryRecord(id: $sourceId) {
+            id
+            title
+            category
+            amount
+            end
+            date
+            monetaryType
+          }
+        }
+      `
+
+      const data = await graphql.client?.request(query, { sourceId })
+      this.monetaryRecords[sourceId] = data?.monetaryRecord as MonetaryRecord
+      return this.monetaryRecords[sourceId]
+    },
+
     async loadRecurringRecords() {
       const graphql = useGraphQL()
       const query = gql`
@@ -80,6 +108,12 @@ export const useMoneyStore = defineStore("money", {
         mutation ($input: MonetaryRecordInput) {
           saveMonetaryRecord(monetaryRecordInput: $input) {
             id
+            title
+            category
+            amount
+            date
+            end
+            monetaryType
           }
         }
       `
@@ -89,9 +123,13 @@ export const useMoneyStore = defineStore("money", {
         },
       }
 
-      return graphql.client?.request(query, input)
+      const data = await graphql.client?.request(query, input)
+      const record: MonetaryRecord = data?.saveMonetaryRecord as MonetaryRecord
+      if (record && record.id) {
+        this.monetaryRecords[record.id] = record
+      }
     },
-    async deleteMoney(slice: MonetarySlice) {
+    async deleteMoney(sourceId: string) {
       const graphql = useGraphQL()
       const query = gql`
         mutation ($input: ID) {
@@ -99,7 +137,7 @@ export const useMoneyStore = defineStore("money", {
         }
       `
 
-      await graphql.client?.request(query, { input: slice.sourceId })
+      await graphql.client?.request(query, { input: sourceId })
     },
 
     async loadMoneyByDate(from: string, to: string) {

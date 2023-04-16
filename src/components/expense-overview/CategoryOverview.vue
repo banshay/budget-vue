@@ -39,16 +39,18 @@
               class="relative cursor-pointer pr-2 text-right tracking-wider"
               :class="{ 'border-x-2 border-b-2': isToday(date) }"
             >
-              <div
+              <expense-modal
                 v-for="slice in moneyStore.getDateCategoryExpense(
                   date,
                   category
                 )"
                 :key="slice.sourceId"
-                @click="openExpenseModal(slice)"
+                :expense="selectedMonetaryRecord"
+                @click="selectMonetaryRecord(slice.sourceId)"
+                @onClose="loadData"
               >
                 {{ slice.amount }}
-              </div>
+              </expense-modal>
             </td>
           </tr>
         </table>
@@ -59,42 +61,19 @@
 
 <script setup lang="ts">
 import { useMoneyStore } from "@/stores/money/money"
-import { computed, ref, watch, watchEffect } from "vue"
-import type { MonetarySlice } from "@/types/moneyTypes"
-import { useModal } from "vue-final-modal"
-import ExpenseModal from "@/components/expense-overview/SimpleExpenseModal.vue"
+import { computed, ref, watchEffect } from "vue"
+import type { MonetaryRecord, MonetarySlice } from "@/types/moneyTypes"
 import { Temporal } from "@js-temporal/polyfill"
-import SimpleExpenseModal from "@/components/expense-overview/SimpleExpenseModal.vue"
+import ExpenseModal from "@/components/expense/ExpenseModal.vue"
 
 const moneyStore = useMoneyStore()
 
-const selectedSlice = ref<MonetarySlice | null>(null)
-
-const { open, close, patchOptions } = useModal({
-  component: SimpleExpenseModal,
-})
-
-watch(selectedSlice, () => {
-  patchOptions({
-    attrs: {
-      slice: selectedSlice.value,
-      onDelete() {
-        if (selectedSlice.value) {
-          moneyStore.deleteMoney(selectedSlice.value)
-          loadData()
-        }
-        close()
-      },
-    },
-  })
-})
-
-function openExpenseModal(slice: MonetarySlice) {
-  selectedSlice.value = slice
-  open()
-}
-
+const selectedMonetaryRecord = ref<MonetaryRecord | null>(null)
 const centerDate = ref<Temporal.PlainDate>(Temporal.Now.plainDateISO())
+
+async function selectMonetaryRecord(sourceId: string) {
+  selectedMonetaryRecord.value = await moneyStore.loadMonetaryRecord(sourceId)
+}
 
 const categoryCounts = computed(() =>
   Object.entries(moneyStore.moneyByDate)

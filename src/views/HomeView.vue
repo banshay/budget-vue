@@ -42,7 +42,6 @@
       <ExpenseModal
         class="m-4 mt-auto h-16 w-16 items-end rounded-full bg-lime-500 hover:bg-lime-400"
       >
-        <!--        <router-link to="/add">-->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="m-auto h-8 h-full w-8 fill-current text-gray-200"
@@ -55,7 +54,6 @@
             clip-rule="evenodd"
           />
         </svg>
-        <!--        </router-link>-->
       </ExpenseModal>
     </div>
   </div>

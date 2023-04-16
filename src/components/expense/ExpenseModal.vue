@@ -13,9 +13,10 @@ import { Temporal } from "@js-temporal/polyfill"
 import { useMoneyStore } from "@/stores/money/money"
 
 type ExpenseProps = {
-  expense?: MonetaryRecord
+  expense?: MonetaryRecord | null
 }
 const props = defineProps<ExpenseProps>()
+const emit = defineEmits<{ (e: "onClose"): void }>()
 
 const moneyStore = useMoneyStore()
 
@@ -26,31 +27,28 @@ const initial: MonetaryRecord = readonly({
   monetaryType: "ONE_TIME",
   title: "Manual",
 })
-
 const expense = ref<MonetaryRecord>(initial)
 
 const modalOptions = {
   component: AddExpenseModal,
   attrs: {
-    expense: expense.value,
+    expense: initial,
     autofocus: false,
+    showDelete: false,
     onClosed: onClosed,
     onSave: onSave,
-    onOpened: onOpened,
+    onDelete,
+    onOpened,
   },
 }
+const { open, close, patchOptions } = useModal(modalOptions)
 
+function onDelete() {
+  close()
+}
 function onClosed() {
-  expense.value = initial
-
-  patchOptions({
-    ...modalOptions,
-    attrs: {
-      ...modalOptions.attrs,
-      expense: expense.value,
-      autofocus: false,
-    },
-  })
+  expense.value = props.expense ?? initial
+  emit("onClose")
 }
 
 function onSave(toSave: MonetaryRecord) {
@@ -63,13 +61,10 @@ function onOpened() {
     ...modalOptions,
     attrs: {
       ...modalOptions.attrs,
-      expense: expense.value,
       autofocus: true,
     },
   })
 }
-
-const { open, close, patchOptions } = useModal(modalOptions)
 
 watch(expense, () => {
   patchOptions({
@@ -78,12 +73,19 @@ watch(expense, () => {
       ...modalOptions.attrs,
       expense: expense.value,
       autofocus: false,
+      showDelete: expense.value !== initial,
     },
   })
 })
 
+watch(
+  () => props.expense,
+  () => {
+    expense.value = props.expense ?? initial
+  }
+)
+
 function openModal() {
-  expense.value = props.expense ?? initial
   open()
 }
 </script>
