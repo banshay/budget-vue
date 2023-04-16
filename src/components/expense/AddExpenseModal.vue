@@ -166,6 +166,9 @@ function save() {
   }
   editableExpense.value.title =
     title.value?.innerHTML ?? editableExpense.value.title
+  if (editableExpense.value.monetaryType.startsWith("RECURRING")) {
+    editableExpense.value.category = editableExpense.value.title
+  }
 
   emit("save", editableExpense.value)
 }
