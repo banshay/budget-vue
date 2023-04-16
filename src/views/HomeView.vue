@@ -3,7 +3,7 @@
     <div class="flex flex-grow flex-col">
       <div class="flex flex-grow flex-col items-center justify-center">
         <p class="self-center italic text-gray-200">
-          {{ visualisationPeriodDisplay[visualisationPeriod] }}
+          {{ visualisationPeriodDisplay[optionStore.visualisationPeriod] }}
         </p>
         <p class="text-7xl text-gray-200">
           {{ moneyStore.balance > 0 ? "+" : "" }}{{ moneyStore.balance }}
