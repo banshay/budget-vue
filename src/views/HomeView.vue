@@ -39,35 +39,36 @@
           <table-component class="m-4 h-16 w-16 fill-current text-gray-200" />
         </div>
       </router-link>
-      <div
+      <ExpenseModal
         class="m-4 mt-auto h-16 w-16 items-end rounded-full bg-lime-500 hover:bg-lime-400"
       >
-        <router-link to="/add">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="m-auto h-8 h-full w-8 fill-current text-gray-200"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 3a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H4a1 1 0 1 1 0-2h5V4a1 1 0 0 1 1-1z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </router-link>
-      </div>
+        <!--        <router-link to="/add">-->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="m-auto h-8 h-full w-8 fill-current text-gray-200"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 3a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H4a1 1 0 1 1 0-2h5V4a1 1 0 0 1 1-1z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <!--        </router-link>-->
+      </ExpenseModal>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue"
+import { onActivated, onMounted, watch } from "vue"
 import { useMoneyStore } from "@/stores/money/money"
 import { useOptionStore } from "@/stores/options/options"
 import { visualisationPeriodDisplay } from "@/types/optionTypes"
 import CogComponent from "@/assets/cog.svg?component"
 import TableComponent from "@/assets/table.svg?component"
+import ExpenseModal from "@/components/expense/ExpenseModal.vue"
 
 const moneyStore = useMoneyStore()
 const optionStore = useOptionStore()

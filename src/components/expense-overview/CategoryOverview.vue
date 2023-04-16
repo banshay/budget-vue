@@ -62,15 +62,16 @@ import { useMoneyStore } from "@/stores/money/money"
 import { computed, ref, watch, watchEffect } from "vue"
 import type { MonetarySlice } from "@/types/moneyTypes"
 import { useModal } from "vue-final-modal"
-import ExpenseModal from "@/components/expense-overview/ExpenseModal.vue"
+import ExpenseModal from "@/components/expense-overview/SimpleExpenseModal.vue"
 import { Temporal } from "@js-temporal/polyfill"
+import SimpleExpenseModal from "@/components/expense-overview/SimpleExpenseModal.vue"
 
 const moneyStore = useMoneyStore()
 
 const selectedSlice = ref<MonetarySlice | null>(null)
 
 const { open, close, patchOptions } = useModal({
-  component: ExpenseModal,
+  component: SimpleExpenseModal,
 })
 
 watch(selectedSlice, () => {

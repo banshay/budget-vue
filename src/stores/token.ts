@@ -1,4 +1,4 @@
-import {defineStore} from "pinia"
+import { defineStore } from "pinia"
 
 const host: string = import.meta.env.VITE_ENDPOINT
 
@@ -10,12 +10,12 @@ interface State {
 
 export const useTokenStore = defineStore("token", {
   state: () =>
-      ({
-        uid: null,
-        authorized: false,
-        clientId:
-            "405975567512-ml31fikaagpbtni851nplbhpfg2tkqop.apps.googleusercontent.com",
-      } as State),
+    ({
+      uid: null,
+      authorized: false,
+      clientId:
+        "405975567512-ml31fikaagpbtni851nplbhpfg2tkqop.apps.googleusercontent.com",
+    } as State),
   actions: {
     loadUid() {
       this.uid = localStorage.getItem("uid")
@@ -53,7 +53,7 @@ export const useTokenStore = defineStore("token", {
         },
       })
       const responseJson: { uid: string; authorized: boolean } =
-          await response.json()
+        await response.json()
       this.uid = responseJson.uid
       localStorage.setItem("uid", this.uid)
     },
