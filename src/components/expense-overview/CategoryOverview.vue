@@ -103,6 +103,9 @@ const categoryList = computed(
 )
 
 const today = computed<string>(() => Temporal.Now.plainDateISO().toString())
+const aWeekForward = computed<Temporal.PlainDate>(() =>
+  Temporal.Now.plainDateISO().add({ days: 7 })
+)
 const aWeekBack = computed<Temporal.PlainDate>(() =>
   Temporal.Now.plainDateISO().subtract({ days: 7 })
 )
@@ -153,7 +156,10 @@ function createDateDisplay(dateStr: string) {
   if (isoDate.toString() === yesterday.value) {
     return "Yesterday"
   }
-  if (Temporal.PlainDate.compare(aWeekBack.value, isoDate) == -1) {
+  if (
+    Temporal.PlainDate.compare(aWeekBack.value, isoDate) == -1 &&
+    Temporal.PlainDate.compare(isoDate, aWeekForward.value) == -1
+  ) {
     return daysOfWeek[isoDate.dayOfWeek - 1]
   }
   return toShortDateString(isoDate)
