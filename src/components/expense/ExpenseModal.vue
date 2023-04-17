@@ -53,7 +53,15 @@ function onClosed() {
 }
 
 function onSave(toSave: MonetaryRecord) {
-  moneyStore.saveMoney(toSave)
+  moneyStore.saveMoney({
+    amount: toSave.amount,
+    category: toSave.category,
+    date: toSave.date,
+    end: toSave.end,
+    id: toSave.id,
+    monetaryType: toSave.monetaryType,
+    title: toSave.title,
+  })
   close()
 }
 
