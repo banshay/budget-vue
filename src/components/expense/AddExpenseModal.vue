@@ -143,6 +143,11 @@ function initExpense() {
     customDate.value = new Date(date.epochMilliseconds)
     expenseType.value = "Custom"
   }
+  if ((temp?.amount ?? 0) < 0) {
+    temp.amount = (temp.amount ?? 0) * -1
+  } else {
+    expenseOrIncome.value = "Income"
+  }
   editableExpense.value = temp
 }
 initExpense()
