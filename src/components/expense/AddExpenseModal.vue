@@ -138,15 +138,17 @@ function initExpense() {
   }
   if (
     temp.monetaryType === "ONE_TIME" &&
-    date.since(Temporal.Now.instant()).abs().days >= 0
+    date.since(Temporal.Now.instant()).abs().days > 0
   ) {
     customDate.value = new Date(date.epochMilliseconds)
     expenseType.value = "Custom"
   }
-  if ((temp?.amount ?? 0) < 0) {
-    temp.amount = (temp.amount ?? 0) * -1
-  } else {
-    expenseOrIncome.value = "Income"
+  if (temp.amount) {
+    if (temp.amount < 0) {
+      temp.amount = temp.amount * -1
+    } else {
+      expenseOrIncome.value = "Income"
+    }
   }
   editableExpense.value = temp
 }
