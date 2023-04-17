@@ -87,6 +87,7 @@ export const useMoneyStore = defineStore("money", {
       const query = gql`
         {
           recurringOverview {
+            id
             amount
             category
             title

@@ -11,8 +11,13 @@
         v-for="record in moneyStore.recurringRecords"
         :key="record.title"
       >
-        <div class="border-b border-b-gray-200 py-2">
-          {{ record.title ?? record.category }}
+        <div class="cursor-pointer border-b border-b-gray-200 py-2">
+          <expense-modal
+            :expense="record"
+            @onClose="moneyStore.loadRecurringRecords"
+          >
+            {{ record.title ?? record.category }}
+          </expense-modal>
         </div>
         <div class="border-b border-b-gray-200 py-2">
           {{ formatDate(record.date) }}
@@ -20,7 +25,14 @@
         <div class="border-b border-b-gray-200 py-2">
           {{ formatDate(record.end) }}
         </div>
-        <div class="border-b border-b-gray-200 py-2">{{ record.amount }}</div>
+        <div class="cursor-pointer border-b border-b-gray-200 py-2">
+          <expense-modal
+            :expense="record"
+            @onClose="moneyStore.loadRecurringRecords"
+          >
+            {{ record.amount }}
+          </expense-modal>
+        </div>
         <div class="border-b border-b-gray-200 py-2">{{ record.daily }}</div>
         <div class="border-b border-b-gray-200 py-2">{{ record.monthly }}</div>
       </template>
@@ -32,6 +44,7 @@
 import { useMoneyStore } from "@/stores/money/money"
 import { onMounted } from "vue"
 import { Temporal } from "@js-temporal/polyfill"
+import ExpenseModal from "@/components/expense/ExpenseModal.vue"
 
 const moneyStore = useMoneyStore()
 onMounted(() => moneyStore.loadRecurringRecords())
