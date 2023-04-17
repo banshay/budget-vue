@@ -10,7 +10,7 @@
         <div class="grid grid-cols-2">
           <div class="mb-3 flex text-2xl font-bold">
             <span ref="title" @keydown.enter="finishEdit()">{{
-              editableExpense.title ?? "Manual"
+              editableExpense.title ?? editableExpense.category ?? "Manual"
             }}</span>
             <pencil-component
               v-if="showPencil"
@@ -123,27 +123,33 @@ const types = Object.keys(MonetaryType)
 
 const isExpense = computed(() => expenseOrIncome.value === "Expense")
 
+function initExpense() {
+  const temp = { ...props.expense }
+  const date = Temporal.Instant.from(temp.date)
+  if (temp.monetaryType === "RECURRING_RANGE" && temp.end) {
+    dateRange.value = [
+      new Date(date.epochMilliseconds),
+      new Date(Temporal.Instant.from(temp.end).epochMilliseconds),
+    ]
+    expenseType.value = "Range"
+  } else if (temp.monetaryType.startsWith("RECURRING")) {
+    customDate.value = new Date(date.epochMilliseconds)
+    expenseType.value = "Recurring"
+  }
+  if (
+    temp.monetaryType === "ONE_TIME" &&
+    date.since(Temporal.Now.instant()).abs().days >= 0
+  ) {
+    customDate.value = new Date(date.epochMilliseconds)
+    expenseType.value = "Custom"
+  }
+  editableExpense.value = temp
+}
+initExpense()
+
 watch(
   () => props.expense,
-  () => {
-    const temp = { ...props.expense }
-    const date = Temporal.Instant.from(temp.date)
-    if (temp.monetaryType === "RECURRING_RANGE" && temp.end) {
-      dateRange.value = [
-        new Date(date.epochMilliseconds),
-        new Date(Temporal.Instant.from(temp.end).epochMilliseconds),
-      ]
-      expenseType.value = "Range"
-    }
-    if (
-      temp.monetaryType === "ONE_TIME" &&
-      date.since(Temporal.Now.instant()).abs().days >= 0
-    ) {
-      customDate.value = new Date(date.epochMilliseconds)
-      expenseType.value = "Custom"
-    }
-    editableExpense.value = temp
-  }
+  () => initExpense()
 )
 
 function save() {

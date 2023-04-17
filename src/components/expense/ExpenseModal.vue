@@ -14,6 +14,7 @@ import { useMoneyStore } from "@/stores/money/money"
 
 type ExpenseProps = {
   expense?: MonetaryRecord | null
+  open?: boolean
 }
 const props = defineProps<ExpenseProps>()
 const emit = defineEmits<{ (e: "onClose"): void }>()
@@ -27,7 +28,7 @@ const initial: MonetaryRecord = readonly({
   monetaryType: "ONE_TIME",
   title: "Manual",
 })
-const expense = ref<MonetaryRecord>(initial)
+const expense = ref<MonetaryRecord>(props.expense ?? initial)
 
 const modalOptions = {
   component: AddExpenseModal,
@@ -61,6 +62,7 @@ function onOpened() {
     ...modalOptions,
     attrs: {
       ...modalOptions.attrs,
+      expense: expense.value ?? initial,
       autofocus: true,
     },
   })
@@ -83,6 +85,11 @@ watch(
   () => {
     expense.value = props.expense ?? initial
   }
+)
+
+watch(
+  () => props.open,
+  () => openModal()
 )
 
 function openModal() {

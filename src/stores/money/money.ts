@@ -95,6 +95,7 @@ export const useMoneyStore = defineStore("money", {
             monthly
             date
             end
+            monetaryType
           }
         }
       `
